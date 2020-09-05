@@ -12,4 +12,6 @@
     <string name="menu_keluar">Keluar</string>
     <string name="nama_aplikasi">Aplikasi Penyimpanan Dokumen Online Terenkripsi</string>
 
+    <string name="nav_header_username">Username : </string>
+
 </resources>

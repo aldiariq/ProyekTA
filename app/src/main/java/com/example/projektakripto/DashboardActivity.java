@@ -1,5 +1,6 @@
 package com.example.projektakripto;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,7 +55,9 @@ public class DashboardActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_keluar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                System.exit(0);
+                finish();
+                Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
+                startActivity(pindahkehalamanmasuk);
                 return true;
             }
         });
