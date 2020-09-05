@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 email = txtEmail.getText().toString().trim();
                 password = txtPassword.getText().toString().trim();
 
+                finish();
                 Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
                 startActivity(pindahkedashboard);
             }
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btnDaftar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent daftar = new Intent(MainActivity.this, DaftarActivity.class);
                 startActivity(daftar);
             }

@@ -9,5 +9,5 @@
         android:id="@+id/nav_halaman_utama"
         android:name="com.example.projektakripto.ui.home.HomeFragment"
         android:label="@string/menu_halaman_utama"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_halaman_utama" />
 </navigation>

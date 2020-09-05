@@ -29,13 +29,16 @@ public class DaftarActivity extends AppCompatActivity {
                 password1 = txtPassword1.getText().toString();
                 password2 = txtPassword2.getText().toString();
 
-
+                finish();
+                Intent masuk = new Intent(DaftarActivity.this, MainActivity.class);
+                startActivity(masuk);
             }
         });
 
         btnMasuk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent masuk = new Intent(DaftarActivity.this, MainActivity.class);
                 startActivity(masuk);
             }
