@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.projektakripto.R;
 import com.example.projektakripto.ui.gantipassword.GantiPasswordViewModel;
+import com.example.projektakripto.ui.tentangaplikasi.TentangAplikasiFragment;
 
 public class PenyimpananFragment extends Fragment {
 

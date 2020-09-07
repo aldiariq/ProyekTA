@@ -11,8 +11,10 @@
     <string name="menu_halaman_utama">Halaman Utama</string>
     <string name="menu_ganti_password">Ganti Password</string>
     <string name="menu_penyimpanan">Penyimpanan</string>
+    <string name="menu_tentangaplikasi">Tentang Aplikasi</string>
     <string name="menu_keluar">Keluar</string>
     <string name="nama_aplikasi">Aplikasi Penyimpanan Dokumen Online Terenkripsi</string>
+    <string name="nama_pembuat_aplikasi">M. Aldi Ariqi</string>
 
     <string name="nav_header_username">Username : </string>
     <!-- TODO: Remove or change this placeholder text -->
