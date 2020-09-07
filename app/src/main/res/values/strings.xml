@@ -9,9 +9,12 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_halaman_utama">Halaman Utama</string>
+    <string name="menu_ganti_password">Ganti Password</string>
     <string name="menu_keluar">Keluar</string>
     <string name="nama_aplikasi">Aplikasi Penyimpanan Dokumen Online Terenkripsi</string>
 
     <string name="nav_header_username">Username : </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
