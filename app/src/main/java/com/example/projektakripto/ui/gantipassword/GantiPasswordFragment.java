@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.projektakripto.R;
@@ -19,6 +21,8 @@ import com.example.projektakripto.R;
 public class GantiPasswordFragment extends Fragment {
 
     private GantiPasswordViewModel gantiPasswordViewModel;
+    private EditText passwordLama, passwordBaru1, passwordBaru2;
+    private Button btnSimpan;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         gantiPasswordViewModel =  ViewModelProviders.of(this).get(GantiPasswordViewModel.class);
@@ -30,7 +34,15 @@ public class GantiPasswordFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        initView(root);
         return root;
+    }
+
+    private void initView(View view){
+        passwordLama = (EditText) view.findViewById(R.id.etpasswordlamaGantipassword);
+        passwordBaru1 = (EditText) view.findViewById(R.id.etpasswordbaru1Gantipassword);
+        passwordBaru2 = (EditText) view.findViewById(R.id.etpasswordbaru2Gantipassword);
+        btnSimpan = (Button) view.findViewById(R.id.btnsimpanpasswordGantipassword);
     }
 
 }

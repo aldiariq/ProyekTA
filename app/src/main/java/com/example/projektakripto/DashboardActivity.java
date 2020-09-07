@@ -48,7 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_halaman_utama, R.id.nav_ganti_password, R.id.nav_keluar)
+                R.id.nav_halaman_utama, R.id.nav_penyimpanan, R.id.nav_ganti_password, R.id.nav_keluar)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -70,7 +70,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 int idMenu = destination.getId();
                 switch (idMenu){
-                    case R.id.nav_halaman_utama:
+                    case R.id.nav_penyimpanan:
                         fab.setVisibility(View.VISIBLE);
                         break;
                     default:

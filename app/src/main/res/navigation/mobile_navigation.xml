@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_halaman_utama" />
 
     <fragment
+        android:id="@+id/nav_penyimpanan"
+        android:name="com.example.projektakripto.ui.penyimpanan.PenyimpananFragment"
+        android:label="@string/menu_penyimpanan"
+        tools:layout="@layout/penyimpanan_fragment" />
+
+    <fragment
         android:id="@+id/nav_ganti_password"
         android:name="com.example.projektakripto.ui.gantipassword.GantiPasswordFragment"
         android:label="@string/menu_ganti_password"
