@@ -10,7 +10,7 @@ public class HomeViewModel extends ViewModel {
 
     public HomeViewModel() {
         namaHalamanhome = new MutableLiveData<>();
-        namaHalamanhome.setValue("Ini Halaman Utama");
+        namaHalamanhome.setValue("Selamat Datang, ");
     }
 
     public LiveData<String> getNamahalamanhome() {

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
     android:background="#ffffff"
     tools:context=".MainActivity">
     <FrameLayout
@@ -19,7 +21,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/shapeatasbglogin"
+                android:background="@drawable/shapegradientungu"
                 android:paddingTop="50dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,14 +86,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/shapebtnmasuk"
-                android:text="Masuk"></Button>
+                android:text="Masuk"
+                android:textColor="@android:color/white"></Button>
 
             <Button
                 android:id="@+id/btndaftarMasuk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shapebtndaftar"
-                android:text="Daftar"></Button>
+                android:text="Daftar"
+                android:textColor="@android:color/white"></Button>
         </LinearLayout>
     </FrameLayout>
-</RelativeLayout>
+</ScrollView>
