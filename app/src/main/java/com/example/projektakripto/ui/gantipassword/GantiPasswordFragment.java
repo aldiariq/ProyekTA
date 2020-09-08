@@ -21,24 +21,26 @@ import com.example.projektakripto.R;
 public class GantiPasswordFragment extends Fragment {
 
     private GantiPasswordViewModel gantiPasswordViewModel;
+
+    private TextView tvnamahalaman;
     private EditText passwordLama, passwordBaru1, passwordBaru2;
     private Button btnSimpan;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         gantiPasswordViewModel =  ViewModelProviders.of(this).get(GantiPasswordViewModel.class);
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
-        final TextView textView = root.findViewById(R.id.tv_ganti_password);
-        gantiPasswordViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        initView(root);
+        gantiPasswordViewModel.getnamaHalamangantipassword().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                tvnamahalaman.setText(s);
             }
         });
-        initView(root);
         return root;
     }
 
     private void initView(View view){
+        tvnamahalaman = (TextView) view.findViewById(R.id.tv_ganti_password);
         passwordLama = (EditText) view.findViewById(R.id.etpasswordlamaGantipassword);
         passwordBaru1 = (EditText) view.findViewById(R.id.etpasswordbaru1Gantipassword);
         passwordBaru2 = (EditText) view.findViewById(R.id.etpasswordbaru2Gantipassword);

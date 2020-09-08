@@ -16,36 +16,49 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/tv_tentangaplikasi"
+        android:id="@+id/tv_tentang_tentangaplikasi"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nama_aplikasi"
+        android:text=""
         android:textAlignment="center"
         android:textStyle="bold"
-        android:textSize="30sp"/>
+        android:textSize="24sp"/>
 
     <TextView
+        android:id="@+id/tv_pembimbing_tentangaplikasi"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="By"
+        android:text=""
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="20sp"/>
 
     <TextView
+        android:id="@+id/tv_pembuat_tentangaplikasi"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nama_pembuat_aplikasi"
+        android:text=""
         android:textAlignment="center"
         android:textStyle="bold"
-        android:textSize="30sp"/>
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tv_intro_tentangaplikasi"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="18sp"/>
 </LinearLayout>

@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class PenyimpananViewModel extends ViewModel {
-    private MutableLiveData<String> mText;
+    private MutableLiveData<String> namaHalamanpenyimpanan;
 
     public PenyimpananViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Ini Halaman Penyimpanan");
+        namaHalamanpenyimpanan = new MutableLiveData<>();
+        namaHalamanpenyimpanan.setValue("Ini Halaman Penyimpanan");
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<String> getNamahalamanpenyimpanan() {
+        return namaHalamanpenyimpanan;
     }
 }

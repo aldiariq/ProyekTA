@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class GantiPasswordViewModel extends ViewModel {
-    private MutableLiveData<String> mText;
+    private MutableLiveData<String> namaHalamangantipassword;
 
     public GantiPasswordViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Ini Halaman Ganti Password");
+        namaHalamangantipassword = new MutableLiveData<>();
+        namaHalamangantipassword.setValue("Ini Halaman Ganti Password");
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<String> getnamaHalamangantipassword() {
+        return namaHalamangantipassword;
     }
 }

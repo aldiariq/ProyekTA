@@ -15,7 +15,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.projektakripto.R;
-import com.example.projektakripto.ui.penyimpanan.PenyimpananViewModel;
+
+import org.w3c.dom.Text;
 
 public class TentangAplikasiFragment extends Fragment {
 
@@ -25,23 +26,53 @@ public class TentangAplikasiFragment extends Fragment {
         return new TentangAplikasiFragment();
     }
 
+    private TextView tvtentangAplikasi;
+    private TextView tvpembimbingAplikasi;
+    private TextView tvpembuatAplikasi;
+    private TextView tvintroAplikasi;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         tentangAplikasiViewModel =  ViewModelProviders.of(this).get(TentangAplikasiViewModel.class);
         View root = inflater.inflate(R.layout.tentang_aplikasi_fragment, container, false);
-        final TextView textView = root.findViewById(R.id.tv_tentangaplikasi);
-//        tentangAplikasiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         initView(root);
+
+        tentangAplikasiViewModel.gettentangAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                tvtentangAplikasi.setText(s);
+            }
+        });
+
+        tentangAplikasiViewModel.getpembimbingTugasakhir().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvpembimbingAplikasi.setText("Pembimbing Tugas Akhir : " + s);
+            }
+        });
+
+        tentangAplikasiViewModel.getpembuatAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvpembuatAplikasi.setText("Pembuat Aplikasi : " + s);
+            }
+        });
+
+        tentangAplikasiViewModel.getintroAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvintroAplikasi.setText(s);
+            }
+        });
+
         return root;
     }
 
     private void initView(View view){
-
+        tvtentangAplikasi = view.findViewById(R.id.tv_tentang_tentangaplikasi);
+        tvpembimbingAplikasi = view.findViewById(R.id.tv_pembimbing_tentangaplikasi);
+        tvpembuatAplikasi = view.findViewById(R.id.tv_pembuat_tentangaplikasi);
+        tvintroAplikasi = view.findViewById(R.id.tv_intro_tentangaplikasi);
     }
 
 }

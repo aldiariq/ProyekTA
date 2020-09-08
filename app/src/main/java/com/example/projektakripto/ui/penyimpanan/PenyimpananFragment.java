@@ -22,6 +22,7 @@ import com.example.projektakripto.ui.tentangaplikasi.TentangAplikasiFragment;
 public class PenyimpananFragment extends Fragment {
 
     private PenyimpananViewModel penyimpananViewModel;
+    private TextView tvnamahalaman;
     private RecyclerView rvFile;
 
     public static PenyimpananFragment newInstance() {
@@ -32,18 +33,19 @@ public class PenyimpananFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         penyimpananViewModel =  ViewModelProviders.of(this).get(PenyimpananViewModel.class);
         View root = inflater.inflate(R.layout.penyimpanan_fragment, container, false);
-        final TextView textView = root.findViewById(R.id.tv_penyimpanan);
-        penyimpananViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        initView(root);
+
+        penyimpananViewModel.getNamahalamanpenyimpanan().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                tvnamahalaman.setText(s);
             }
         });
-        initView(root);
         return root;
     }
 
     private void initView(View view){
+        tvnamahalaman = (TextView) view.findViewById(R.id.tv_penyimpanan);
         rvFile = (RecyclerView) view.findViewById(R.id.rv_file_penyimpanan);
     }
 }
