@@ -1,5 +1,6 @@
 package com.example.projektakripto;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -40,7 +42,15 @@ public class DashboardActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "FAB di Klik", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//                Snackbar.make(view, "FAB di Klik", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent pickPdf = new Intent(Intent.ACTION_GET_CONTENT);
+                pickPdf.setType("application/pdf");
+                pickPdf.addCategory(Intent.CATEGORY_OPENABLE);
+                try {
+                    startActivityForResult(Intent.createChooser(pickPdf, "Select a File to Upload"),103);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(DashboardActivity.this, "Please Install a File Manager",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         fab.setVisibility(View.GONE);
@@ -55,6 +65,8 @@ public class DashboardActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setItemIconTintList(null);
 
         navigationView.getMenu().findItem(R.id.nav_keluar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

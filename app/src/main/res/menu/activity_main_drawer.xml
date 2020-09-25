@@ -8,7 +8,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_halaman_utama"
-            android:icon="@drawable/ic_baseline_home_24"
+            android:icon="@drawable/iconhouse"
             android:title="@string/menu_halaman_utama" />
     </group>
 
@@ -17,7 +17,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_penyimpanan"
-            android:icon="@drawable/ic_baseline_insert_drive_file_24"
+            android:icon="@drawable/iconfiles"
             android:title="@string/menu_penyimpanan" />
     </group>
 
@@ -26,7 +26,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_tentangaplikasi"
-            android:icon="@drawable/ic_baseline_info_24"
+            android:icon="@drawable/iconabout"
             android:title="@string/menu_tentangaplikasi" />
     </group>
 
@@ -35,7 +35,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_ganti_password"
-            android:icon="@drawable/ic_baseline_vpn_key_24"
+            android:icon="@drawable/iconkey"
             android:title="@string/menu_ganti_password" />
     </group>
 
@@ -44,7 +44,7 @@
         android:checkableBehavior="none">
         <item
             android:id="@+id/nav_keluar"
-            android:icon="@drawable/ic_baseline_exit_to_app_24"
+            android:icon="@drawable/iconexit"
             android:title="@string/menu_keluar"/>
     </group>
 </menu>

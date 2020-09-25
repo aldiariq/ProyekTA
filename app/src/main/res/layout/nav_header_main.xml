@@ -19,7 +19,7 @@
         android:layout_gravity="center"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_baseline_account_box_24" />
+        app:srcCompat="@drawable/iconperson" />
 
     <TextView
         android:layout_width="match_parent"
