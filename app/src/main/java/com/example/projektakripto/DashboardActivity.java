@@ -39,10 +39,10 @@ public class DashboardActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "FAB di Klik", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 Intent pickPdf = new Intent(Intent.ACTION_GET_CONTENT);
                 pickPdf.setType("application/pdf");
                 pickPdf.addCategory(Intent.CATEGORY_OPENABLE);

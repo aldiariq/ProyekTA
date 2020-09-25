@@ -1,12 +1,20 @@
 package com.example.projektakripto;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projektakripto.algoritma.rsa.*;
+
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,11 +28,19 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         btnMasuk.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 String email, password;
                 email = txtEmail.getText().toString().trim();
                 password = txtPassword.getText().toString().trim();
+
+//                try {
+//                    Enkripsi enkripsi = new Enkripsi(email);
+//                    Log.d("hasilenkripsi", enkripsi.getBytehasilEnkripsikunciblowfish().toString());
+//                } catch (IOException e) {
+//                    Toast.makeText(MainActivity.this, "Gagal Mengenkripsi", Toast.LENGTH_SHORT).show();
+//                }
 
                 finish();
                 Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);

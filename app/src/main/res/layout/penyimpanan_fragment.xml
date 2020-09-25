@@ -12,9 +12,9 @@
         android:id="@+id/tv_penyimpanan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_ganti_password"
+        android:text="@string/menu_penyimpanan"
         android:textColor="@android:color/black"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,6 +22,7 @@
         android:layout_marginTop="20dp">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_file_penyimpanan"
+            tools:listitem="@layout/itemfile_penyimpanan"
             android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
