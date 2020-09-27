@@ -1,8 +1,9 @@
-package com.example.projektakripto.server;
+package com.example.projektakripto.network;
 
 import com.example.projektakripto.response.ResponseDaftar;
 import com.example.projektakripto.response.ResponseDeleteFile;
 import com.example.projektakripto.response.ResponseDownloadFile;
+import com.example.projektakripto.response.ResponseGantiPasswordPengguna;
 import com.example.projektakripto.response.ResponseGetFile;
 import com.example.projektakripto.response.ResponseGetKunciRSA;
 import com.example.projektakripto.response.ResponseKeluar;
@@ -20,8 +21,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
-public interface DataInterface {
-
+public interface DataService {
     //Implementasi Endpoint Operasi Pengguna
     @FormUrlEncoded
     @POST(Server.API_MASUK)
@@ -38,6 +38,14 @@ public interface DataInterface {
             @Field("password") String password,
             @Field("kunciprivate") String kunciprivate,
             @Field("kuncipublic") String kuncipublic
+    );
+
+    @FormUrlEncoded
+    @POST(Server.API_GANTIPASSWORD)
+    Call<ResponseGantiPasswordPengguna> apiGantipassword(
+            @Field("id_pengguna") String id_pengguna,
+            @Field("password_lama") String passwordlama,
+            @Field("password_baru") String passwordbaru
     );
 
     @GET(Server.API_KELUAR + "{id_pengguna")
@@ -76,8 +84,4 @@ public interface DataInterface {
             @Path("id_pengguna") String id_pengguna,
             @Path("id_file") String id_file
     );
-
-
-
-
 }

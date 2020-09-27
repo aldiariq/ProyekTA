@@ -1,4 +1,4 @@
-package com.example.projektakripto.server;
+package com.example.projektakripto.network;
 
 public class Server {
     //Inisialisasi Base Url Server Penyimpanan
@@ -9,6 +9,7 @@ public class Server {
 
     public static final String API_MASUK = "masukpengguna";
     public static final String API_DAFTAR = "daftarpengguna";
+    public static final String API_GANTIPASSWORD = "gantipasswordpengguna";
     public static final String API_KELUAR = "keluarpengguna";
 
     public static final String API_GETKUNCIRSA = "operasikunci/getkuncirsa";

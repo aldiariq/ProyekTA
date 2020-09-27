@@ -1,4 +1,4 @@
-package com.example.projektakripto.server;
+package com.example.projektakripto.network;
 
 import android.content.Context;
 
