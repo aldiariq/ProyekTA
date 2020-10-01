@@ -18,8 +18,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        //Memanggil Method Inisialisasi Komponen View
         initView();
 
+        //Membuat Thread Untuk Loading ProgressBar
         new Thread(new Runnable() {
             public void run() {
                 while (Progress < 100) {
@@ -35,12 +37,16 @@ public class SplashScreenActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+
+                //Destroy Activity & Menjalankan MainActivity(Masuk)
+                finish();
                 Intent pindahhalamanmasuk = new Intent(SplashScreenActivity.this, MainActivity.class);
                 startActivity(pindahhalamanmasuk);
             }
         }).start();
     }
 
+    //Inisialisasi Komponen View
     private void initView(){
         pbloading = (ProgressBar) findViewById(R.id.pbloadingHalamansplashscreen);
         Progress = pbloading.getProgress();

@@ -6,15 +6,21 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class KunciRSA implements Parcelable {
+
+    //Atribut Model File Pengguna
     @SerializedName("id_kunci")
     private String id_kunci;
+
     @SerializedName("id_pengguna")
     private String id_pengguna;
+
     @SerializedName("kunci_private")
     private String kunci_private;
+
     @SerializedName("kunci_public")
     private String kunci_public;
 
+    //Constructor Model KunciRSA
     protected KunciRSA(Parcel in) {
         id_kunci = in.readString();
         id_pengguna = in.readString();
@@ -22,6 +28,7 @@ public class KunciRSA implements Parcelable {
         kunci_public = in.readString();
     }
 
+    //Proses Penulisan Atribut Model Pengguna
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id_kunci);
@@ -47,6 +54,7 @@ public class KunciRSA implements Parcelable {
         return 0;
     }
 
+    //Setter & Getter Atribut Model KunciRSA
     public String getId_kunci() {
         return id_kunci;
     }

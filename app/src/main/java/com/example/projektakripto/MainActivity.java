@@ -31,31 +31,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Memanggil Method Inisialisasi Komponen View
         initView();
 
+        //Listener btnMasuk
         btnMasuk.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
+                //Inisialisasi Inputan Registrasi
                 String email, password;
                 email = txtEmail.getText().toString().trim();
                 password = txtPassword.getText().toString().trim();
 
+                //Inisialisasi dan Pemanggilan Method Call Retrofit
                 Call<ResponseMasuk> callMasuk = dataService.apiMasuk(email, password);
                 callMasuk.enqueue(new Callback<ResponseMasuk>() {
                     @Override
                     public void onResponse(Call<ResponseMasuk> call, Response<ResponseMasuk> response) {
+                        //Pengecekan Response Code
                         if (response.code() == 200){
+                            //Pengecekan Status dari Response Body
                             if (response.body().isBerhasil()){
+                                //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
                                 finish();
                                 Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
                                 Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
                                 startActivity(pindahkedashboard);
                             }else {
+                                //Memanggil Method Reset Inputan & Menampilkan Dialog
                                 resetInputan();
                                 Toast.makeText(MainActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
                             }
                         }else {
+                            //Memanggil Method Reset Inputan & Menampilkan Dialog
                             resetInputan();
                             Toast.makeText(MainActivity.this, "Gagal Masukdde", Toast.LENGTH_SHORT).show();
                         }
@@ -63,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseMasuk> call, Throwable t) {
+                        //Memanggil Method Reset Inputan & Menampilkan Dialog
                         resetInputan();
                         Toast.makeText(MainActivity.this, "Gagal Masukdd", Toast.LENGTH_SHORT).show();
                     }
@@ -70,9 +81,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Listener btnDaftar
         btnDaftar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Destroy Activity & Menjalankan DaftarActivity
                 finish();
                 Intent daftar = new Intent(MainActivity.this, DaftarActivity.class);
                 startActivity(daftar);
@@ -80,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Inisialisasi Komponen View & Data Service
     private void initView(){
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
         txtEmail = (EditText) findViewById(R.id.inputemailMasuk);
@@ -88,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         btnDaftar = (Button) findViewById(R.id.btndaftarMasuk);
     }
 
+    //Method Untuk Mengosongkan Field Inputan
     private void resetInputan(){
         txtEmail.setText("");
         txtPassword.setText("");

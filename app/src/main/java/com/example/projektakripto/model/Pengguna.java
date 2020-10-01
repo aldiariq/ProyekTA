@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class Pengguna implements Parcelable {
+
+    //Atribut Model Pengguna
     @SerializedName("id_pengguna")
     private String id_pengguna;
 
@@ -15,6 +17,7 @@ public class Pengguna implements Parcelable {
     @SerializedName("nohp_pengguna")
     private String nohp_pengguna;
 
+    //Constructor Model Pengguna
     protected Pengguna(Parcel in) {
         id_pengguna = in.readString();
         email_pengguna = in.readString();
@@ -38,6 +41,7 @@ public class Pengguna implements Parcelable {
         return 0;
     }
 
+    //Proses Penulisan Atribut Model Pengguna
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id_pengguna);
@@ -45,6 +49,7 @@ public class Pengguna implements Parcelable {
         dest.writeString(nohp_pengguna);
     }
 
+    //Setter & Getter Atribut Model Pengguna
     public String getId_pengguna() {
         return id_pengguna;
     }

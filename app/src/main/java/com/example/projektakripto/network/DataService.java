@@ -37,7 +37,8 @@ public interface DataService {
             @Field("nohp") String nohp,
             @Field("password") String password,
             @Field("kunciprivate") String kunciprivate,
-            @Field("kuncipublic") String kuncipublic
+            @Field("kuncipublic") String kuncipublic,
+            @Field("kuncimodulus") String kuncimodulo
     );
 
     @FormUrlEncoded

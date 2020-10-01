@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+
 import com.example.projektakripto.R;
 import com.example.projektakripto.ui.penyimpanan.PenyimpananFragment;
 
@@ -26,6 +28,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =  ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_halaman_utama, container, false);
+
+        //Memanggil Method Inisialisasi Komponen View
         initView(root);
 
         homeViewModel.getNamahalamanhome().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -35,41 +39,42 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //Listener Click CardView Penyimpanan
         cvpenyimpanan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().setTitle("Penyimpanan");
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.nav_host_fragment, new PenyimpananFragment());
-                fragmentTransaction.addToBackStack("Kembali ke Dashboard");
-                fragmentTransaction.commit();
+                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_penyimpanan, null);
             }
         });
 
+        //Listener Click CardView Tentang Aplikasi
         cvtentangaplikasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_tentangaplikasi, null);
             }
         });
 
+        //Listener Click CardView Ganti Password
         cvgantipassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_ganti_password, null);
             }
         });
 
+        //Listener Click CardView Keluar Aplikasi
         cvkeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                System.exit(0);
             }
         });
 
         return root;
     }
 
+    //Inisialisasi Komponen View
     private void initView(View view){
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_home);
         cvpenyimpanan = (CardView) view.findViewById(R.id.cvpenyimpanan_halaman_utama);

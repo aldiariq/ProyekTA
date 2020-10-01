@@ -35,6 +35,8 @@ public class TentangAplikasiFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         tentangAplikasiViewModel =  ViewModelProviders.of(this).get(TentangAplikasiViewModel.class);
         View root = inflater.inflate(R.layout.tentang_aplikasi_fragment, container, false);
+
+        //Memanggil Method Inisialisasi Komponen View
         initView(root);
 
         tentangAplikasiViewModel.gettentangAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -68,6 +70,7 @@ public class TentangAplikasiFragment extends Fragment {
         return root;
     }
 
+    //Inisialisasi Komponen View
     private void initView(View view){
         tvtentangAplikasi = view.findViewById(R.id.tv_tentang_tentangaplikasi);
         tvpembimbingAplikasi = view.findViewById(R.id.tv_pembimbing_tentangaplikasi);

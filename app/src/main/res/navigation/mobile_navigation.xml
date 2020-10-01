@@ -9,7 +9,17 @@
         android:id="@+id/nav_halaman_utama"
         android:name="com.example.projektakripto.ui.home.HomeFragment"
         android:label="@string/menu_halaman_utama"
-        tools:layout="@layout/fragment_halaman_utama" />
+        tools:layout="@layout/fragment_halaman_utama" >
+        <action
+            android:id="@+id/action_nav_halaman_utama_to_nav_tentangaplikasi"
+            app:destination="@id/nav_tentangaplikasi" />
+        <action
+            android:id="@+id/action_nav_halaman_utama_to_nav_penyimpanan"
+            app:destination="@id/nav_penyimpanan" />
+        <action
+            android:id="@+id/action_nav_halaman_utama_to_nav_ganti_password"
+            app:destination="@id/nav_ganti_password" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_penyimpanan"

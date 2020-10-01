@@ -14,6 +14,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
+
+    //Builder OkHttpClient Builder
     private static OkHttpClient.Builder builder() {
         OkHttpClient.Builder okhttpBuilder = new OkHttpClient().newBuilder();
         okhttpBuilder.connectTimeout(60, TimeUnit.SECONDS);
@@ -23,12 +25,15 @@ public class ServiceGenerator {
         return okhttpBuilder;
     }
 
+    //HttpLoggingInterceptor Interceptor
     private static HttpLoggingInterceptor interceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         return interceptor;
     }
+
+    //Create Retrofit Base Service
     public static <S> S createBaseService(Context context, Class<S> serviceClass) {
         OkHttpClient.Builder okhttpBuilder = builder();
 

@@ -29,7 +29,10 @@ public class GantiPasswordFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         gantiPasswordViewModel =  ViewModelProviders.of(this).get(GantiPasswordViewModel.class);
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
+
+        //Memanggil Method Inisialisasi Komponen View
         initView(root);
+
         gantiPasswordViewModel.getnamaHalamangantipassword().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -39,6 +42,7 @@ public class GantiPasswordFragment extends Fragment {
         return root;
     }
 
+    //Inisialisasi Komponen View
     private void initView(View view){
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_ganti_password);
         passwordLama = (EditText) view.findViewById(R.id.etpasswordlamaGantipassword);

@@ -6,15 +6,21 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class FilePengguna implements Parcelable {
+
+    //Atribut Model File Pengguna
     @SerializedName("id_file")
     private String id_file;
+
     @SerializedName("nama_file")
     private String nama_file;
+
     @SerializedName("id_pengguna")
     private String id_pengguna;
+
     @SerializedName("kunci_file")
     private String kunci_file;
 
+    //Constructor Model FilePengguna
     protected FilePengguna(Parcel in) {
         id_file = in.readString();
         nama_file = in.readString();
@@ -22,6 +28,7 @@ public class FilePengguna implements Parcelable {
         kunci_file = in.readString();
     }
 
+    //Proses Penulisan Atribut Model File Pengguna
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id_file);
@@ -30,6 +37,7 @@ public class FilePengguna implements Parcelable {
         dest.writeString(kunci_file);
     }
 
+    //Setter & Getter Atribut Model File Pengguna
     public String getId_file() {
         return id_file;
     }
