@@ -4,16 +4,20 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.projektakripto.model.Pengguna;
 import com.example.projektakripto.network.DataService;
 import com.example.projektakripto.network.ServiceGenerator;
 import com.example.projektakripto.response.ResponseMasuk;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +25,9 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private SharedPreferences preference;
+    private SharedPreferences.Editor editor;
 
     public DataService dataService;
 
@@ -34,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
         //Memanggil Method Inisialisasi Komponen View
         initView();
+
+        //Mengecek Apakah Pengguna Sudah Pernah Masuk
+        if (preference.getBoolean("sudah_masuk", false)){
+            //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
+            finish();
+            Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
+            Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
+            startActivity(pindahkedashboard);
+        }
 
         //Listener btnMasuk
         btnMasuk.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +70,15 @@ public class MainActivity extends AppCompatActivity {
                         if (response.code() == 200){
                             //Pengecekan Status dari Response Body
                             if (response.body().isBerhasil()){
+//                                Menampung Data Pengguna di Shared Preferences
+                                List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
+
+                                editor.putBoolean("sudah_masuk", true);
+                                editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
+                                editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
+                                editor.putString("nohp_pengguna",pengguna.get(0).getNohp_pengguna());
+                                editor.apply();
+
                                 //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
                                 finish();
                                 Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
@@ -95,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Inisialisasi Komponen View & Data Service
     private void initView(){
+        preference = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preference.edit();
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
         txtEmail = (EditText) findViewById(R.id.inputemailMasuk);
         txtPassword = (EditText) findViewById(R.id.inputpasswordMasuk);

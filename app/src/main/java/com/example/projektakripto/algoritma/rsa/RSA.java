@@ -1,10 +1,12 @@
 package com.example.projektakripto.algoritma.rsa;
 
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 
 public class RSA {
+
     private final static SecureRandom random = new SecureRandom();
     private final static BigInteger one = new BigInteger("1");
 
@@ -19,13 +21,8 @@ public class RSA {
         BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
 
         this.modulus = p.multiply(q);
-        this.publicKey = new BigInteger("65537");
+        this.publicKey = BigInteger.probablePrime(bitLength, new Random());
         this.privateKey = publicKey.modInverse(phi);
-    }
-
-    public RSA(BigInteger privateKey, BigInteger modulus){
-        this.privateKey = privateKey;
-        this.modulus = modulus;
     }
 
     public BigInteger prosesencrypt(BigInteger message) {

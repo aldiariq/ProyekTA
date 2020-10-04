@@ -18,7 +18,7 @@ public class Pengguna implements Parcelable {
     private String nohp_pengguna;
 
     //Constructor Model Pengguna
-    protected Pengguna(Parcel in) {
+    public Pengguna(Parcel in) {
         id_pengguna = in.readString();
         email_pengguna = in.readString();
         nohp_pengguna = in.readString();

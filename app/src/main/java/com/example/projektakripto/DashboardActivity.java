@@ -2,36 +2,35 @@ package com.example.projektakripto;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.projektakripto.algoritma.blowfish.Blowfish;
+import com.example.projektakripto.network.DataService;
+import com.example.projektakripto.network.ServiceGenerator;
+import com.example.projektakripto.response.ResponseUploadFile;
 import com.example.projektakripto.utils.FileUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -41,6 +40,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DashboardActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -48,6 +55,11 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView imgpilihfileformupload;
     private TextView txtlokasifileformupload;
     private EditText etpasswordblowfishformupload;
+
+    public DataService dataService;
+
+    private SharedPreferences preference;
+    private SharedPreferences.Editor editor;
 
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     private static final int MY_RESULT_CODE_FILECHOOSER = 2000;
@@ -61,7 +73,10 @@ public class DashboardActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Inisialisasi & Listener Floating Action Button Halaman Upload File
+        //Inisialisasi Komponen Halaman Upload File
+        preference = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preference.edit();
+
         final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,15 +91,35 @@ public class DashboardActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String lokasifile = txtlokasifileformupload.getText().toString();
+                        dataService = (DataService) ServiceGenerator.createBaseService(DashboardActivity.this, DataService.class);
+                        String lokasifileinput = txtlokasifileformupload.getText().toString();
+                        String lokasifileoutput = txtlokasifileformupload.getText().toString() + ".enc";
                         String passwordblowfish = etpasswordblowfishformupload.getText().toString();
+
+                        Blowfish enkripsiblowfish = new Blowfish(passwordblowfish);
+                        enkripsiblowfish.encrypt(lokasifileinput, lokasifileoutput);
+
+                        File filehasilenkripsi = new File(lokasifileoutput);
+                        RequestBody requestBodynamafile = RequestBody.create(MediaType.parse("text/plain"), filehasilenkripsi.getName());
+
+//                        Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, );
+//                        callUpload.enqueue(new Callback<ResponseUploadFile>() {
+//                            @Override
+//                            public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
+//                                Toast.makeText(DashboardActivity.this, "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
 
                         dialog.dismiss();
                     }
                 });
 
                 dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -103,15 +138,6 @@ public class DashboardActivity extends AppCompatActivity {
                         deteksiPermissionandroid();
                     }
                 });
-
-//                Intent pickPdf = new Intent(Intent.ACTION_GET_CONTENT);
-//                pickPdf.setType("application/pdf");
-//                pickPdf.addCategory(Intent.CATEGORY_OPENABLE);
-//                try {
-//                    startActivityForResult(Intent.createChooser(pickPdf, "Silahkan Pilih File Dokumen"),103);
-//                } catch (ActivityNotFoundException e) {
-//                    Toast.makeText(DashboardActivity.this, "File Manager Tidak Ditemukan",Toast.LENGTH_SHORT).show();
-//                }
             }
         });
 
@@ -127,7 +153,12 @@ public class DashboardActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //Seting Warna Icon Navigasi Menjadi Null
+        //Setting Email Pengguna di Navigation Drawer
+        View headerView = navigationView.getHeaderView(0);
+        TextView txtusernamenavigation = (TextView) headerView.findViewById(R.id.txtusernamenavigation);
+        txtusernamenavigation.setText("Username : " + preference.getString("email_pengguna", null));
+
+        //Setting Warna Icon Navigasi Menjadi Null
         navigationView.setItemIconTintList(null);
 
         //Listener Menu Navigasi Keluar
@@ -135,6 +166,11 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                editor.putBoolean("sudah_masuk", false);
+                editor.putString("id_pengguna", "");
+                editor.putString("email_pengguna", "");
+                editor.putString("nohp_pengguna", "");
+                editor.apply();
                 finish();
                 Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
                 startActivity(pindahkehalamanmasuk);
@@ -178,14 +214,26 @@ public class DashboardActivity extends AppCompatActivity {
         // for permission to access External Storage.
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) { // Level 23
 
-            // Check if we have Call permission
-            int permisson = ActivityCompat.checkSelfPermission(DashboardActivity.this,
+            // Check if we have read storage permission
+            int pemissionread = ActivityCompat.checkSelfPermission(DashboardActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE);
 
-            if (permisson != PackageManager.PERMISSION_GRANTED) {
+            if (pemissionread != PackageManager.PERMISSION_GRANTED) {
                 // If don't have permission so prompt the user.
                 this.requestPermissions(
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_REQUEST_CODE_PERMISSION
+                );
+                return;
+            }
+
+            //check if we have write storage permission
+            int permissionwrite = ActivityCompat.checkSelfPermission(DashboardActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permissionwrite != PackageManager.PERMISSION_GRANTED){
+                this.requestPermissions(
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_REQUEST_CODE_PERMISSION
                 );
                 return;

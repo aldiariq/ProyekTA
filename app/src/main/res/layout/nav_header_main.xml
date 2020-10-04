@@ -22,11 +22,12 @@
         app:srcCompat="@drawable/iconperson" />
 
     <TextView
+        android:id="@+id/txtusernamenavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_username"
-        android:textSize="20sp"
+        android:textSize="14sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </LinearLayout>

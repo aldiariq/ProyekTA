@@ -88,6 +88,8 @@ public class Blowfish {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+
+        rawFile.delete();
     }
 
     /**

@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:layout_gravity="center"
+    android:background="@drawable/shapebginputlogin"
     android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -48,15 +49,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </EditText>
-
-    <Button
-        android:id="@+id/btnuploadformupload"
-        android:text="Upload"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Button>
 
 </LinearLayout>

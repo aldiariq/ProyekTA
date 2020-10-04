@@ -1,6 +1,9 @@
 package com.example.projektakripto.response;
 
+import com.example.projektakripto.model.Pengguna;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class ResponseMasuk<T> {
     @SerializedName("berhasil")
@@ -8,7 +11,7 @@ public class ResponseMasuk<T> {
     @SerializedName("pesan")
     private String pesan;
     @SerializedName("pengguna")
-    private T pengguna;
+    private List<Pengguna> pengguna;
 
     public boolean isBerhasil() {
         return berhasil;
@@ -26,11 +29,11 @@ public class ResponseMasuk<T> {
         this.pesan = pesan;
     }
 
-    public T getPengguna() {
+    public List<Pengguna> getPengguna() {
         return pengguna;
     }
 
-    public void setPengguna(T pengguna) {
+    public void setPengguna(List<Pengguna> pengguna) {
         this.pengguna = pengguna;
     }
 }

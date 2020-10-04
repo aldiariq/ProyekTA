@@ -2,7 +2,7 @@ package com.example.projektakripto.network;
 
 public class Server {
     //Inisialisasi Base Url Server Penyimpanan
-    public static String BASE_URL = "http://10.1.8.109/ProjekTAKripto/api/";
+    public static String BASE_URL = "http://192.168.100.13/ProjekTAKripto/api/";
 
     //Inisialisasi Endpoint API Aplikasi
     public static final String API_INFO_APLIKASI = "infoaplikasi";

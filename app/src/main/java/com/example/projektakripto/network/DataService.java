@@ -1,5 +1,6 @@
 package com.example.projektakripto.network;
 
+import com.example.projektakripto.model.Pengguna;
 import com.example.projektakripto.response.ResponseDaftar;
 import com.example.projektakripto.response.ResponseDeleteFile;
 import com.example.projektakripto.response.ResponseDownloadFile;
