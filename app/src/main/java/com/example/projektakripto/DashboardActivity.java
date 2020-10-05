@@ -43,6 +43,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.io.File;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,19 +102,35 @@ public class DashboardActivity extends AppCompatActivity {
 
                         File filehasilenkripsi = new File(lokasifileoutput);
                         RequestBody requestBodynamafile = RequestBody.create(MediaType.parse("text/plain"), filehasilenkripsi.getName());
+                        RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
+                        RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), passwordblowfish);
 
-//                        Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, );
-//                        callUpload.enqueue(new Callback<ResponseUploadFile>() {
-//                            @Override
-//                            public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
-//                                Toast.makeText(DashboardActivity.this, "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
+                        RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
+                        MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
+
+                        Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, idPengguna, kunciFile, fileEnkripsi);
+                        callUpload.enqueue(new Callback<ResponseUploadFile>() {
+                            @Override
+                            public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
+                                //Pengecekan Response Code
+                                if (response.code() == 200){
+                                    //Pengecekan Status dari Response Body
+                                    if (response.body().isBerhasil()){
+                                        Toast.makeText(DashboardActivity.this, "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
+                                        filehasilenkripsi.delete();
+                                    }else {
+                                        Toast.makeText(DashboardActivity.this, "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(DashboardActivity.this, "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
+                                Toast.makeText(DashboardActivity.this, "Gagal Mengupload File", Toast.LENGTH_LONG).show();
+                            }
+                        });
 
                         dialog.dismiss();
                     }
@@ -261,18 +278,14 @@ public class DashboardActivity extends AppCompatActivity {
 
                 // Note: If request is cancelled, the result arrays are empty.
                 // Permissions granted (CALL_PHONE).
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.i( LOG_TAG,"Permission granted!");
-                    Toast.makeText(DashboardActivity.this, "Permission granted!", Toast.LENGTH_SHORT).show();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(DashboardActivity.this, "Akses File Diizinkan", Toast.LENGTH_SHORT).show();
 
                     this.pilihFile();
                 }
                 // Cancelled or denied.
                 else {
-                    Log.i(LOG_TAG,"Permission denied!");
-                    Toast.makeText(DashboardActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DashboardActivity.this, "Akses File Tidak Diizinkan", Toast.LENGTH_SHORT).show();
                 }
                 break;
             }

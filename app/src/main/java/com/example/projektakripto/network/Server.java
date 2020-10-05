@@ -14,7 +14,7 @@ public class Server {
 
     public static final String API_GETKUNCIRSA = "operasikunci/getkuncirsa";
 
-    public static final String API_UPLOADFILE = "opelrasifile/uploadfile";
+    public static final String API_UPLOADFILE = "operasifile/uploadfile";
     public static final String API_DELETEFILE = "operasifile/deletefile";
     public static final String API_GETFILE = "operasifile/getfile";
     public static final String API_DOWNLOADFILE = "operasifile/downloadfile";

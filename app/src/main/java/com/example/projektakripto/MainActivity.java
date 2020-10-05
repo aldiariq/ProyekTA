@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         if (response.code() == 200){
                             //Pengecekan Status dari Response Body
                             if (response.body().isBerhasil()){
-//                                Menampung Data Pengguna di Shared Preferences
+                                //Menampung Data Pengguna di Shared Preferences
                                 List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
 
                                 editor.putBoolean("sudah_masuk", true);

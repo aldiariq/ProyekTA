@@ -68,7 +68,7 @@ public interface DataService {
             @Part("nama_file") RequestBody nama_file,
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("kunci_file") RequestBody kunci_file,
-            @Part MultipartBody.Part filenkripsi
+            @Part MultipartBody.Part file_enkripsi
     );
 
     @GET(Server.API_DELETEFILE + "{id_file}")
