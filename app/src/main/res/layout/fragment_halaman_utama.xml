@@ -18,6 +18,7 @@
         android:layout_marginTop="20dp">
         <TextView
             android:id="@+id/tv_home"
+            android:text="@string/menu_halaman_utama"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"

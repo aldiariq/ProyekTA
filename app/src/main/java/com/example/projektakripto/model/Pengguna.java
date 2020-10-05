@@ -14,6 +14,9 @@ public class Pengguna implements Parcelable {
     @SerializedName("email_pengguna")
     private String email_pengguna;
 
+    @SerializedName("nama_pengguna")
+    private String nama_pengguna;
+
     @SerializedName("nohp_pengguna")
     private String nohp_pengguna;
 
@@ -21,6 +24,7 @@ public class Pengguna implements Parcelable {
     public Pengguna(Parcel in) {
         id_pengguna = in.readString();
         email_pengguna = in.readString();
+        nama_pengguna = in.readString();
         nohp_pengguna = in.readString();
     }
 
@@ -46,6 +50,7 @@ public class Pengguna implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id_pengguna);
         dest.writeString(email_pengguna);
+        dest.writeString(nama_pengguna);
         dest.writeString(nohp_pengguna);
     }
 
@@ -56,6 +61,10 @@ public class Pengguna implements Parcelable {
 
     public String getEmail_pengguna() {
         return email_pengguna;
+    }
+
+    public String getNama_pengguna() {
+        return nama_pengguna;
     }
 
     public String getNohp_pengguna() {

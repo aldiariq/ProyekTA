@@ -23,7 +23,7 @@ public class DaftarActivity extends AppCompatActivity {
 
     public DataService dataService;
 
-    private EditText txtEmail, txtNamalengkap, txtNohp, txtPassword1, txtPassword2;
+    private EditText txtEmail, txtNama, txtNohp, txtPassword1, txtPassword2;
     private Button btnDaftar, btnMasuk;
 
     @Override
@@ -39,9 +39,9 @@ public class DaftarActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Inisialisasi Inputan Registrasi
-
-                String email, namalengkap, nohp, password1, password2;
+                String email, nama, nohp, password1, password2;
                 email = txtEmail.getText().toString();
+                nama = txtNama.getText().toString();
                 nohp = txtNohp.getText().toString();
                 password1 = txtPassword1.getText().toString();
                 password2 = txtPassword2.getText().toString();
@@ -49,7 +49,7 @@ public class DaftarActivity extends AppCompatActivity {
                 RSA daftarRSA = new RSA(128);
 
                 if (password1.equals(password2)){
-                    Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nohp, password1, daftarRSA.getPrivatekey(), daftarRSA.getPublicKey(), daftarRSA.getModulus());
+                    Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, nohp, password1, daftarRSA.getPrivatekey(), daftarRSA.getPublicKey(), daftarRSA.getModulus());
                     callDaftar.enqueue(new Callback<ResponseDaftar>() {
                         @Override
                         public void onResponse(Call<ResponseDaftar> call, Response<ResponseDaftar> response) {
@@ -99,7 +99,7 @@ public class DaftarActivity extends AppCompatActivity {
     private void initView(){
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
         txtEmail = (EditText) findViewById(R.id.inputemailDaftar);
-        txtNamalengkap = (EditText) findViewById(R.id.inputnamaDaftar);
+        txtNama = (EditText) findViewById(R.id.inputnamaDaftar);
         txtNohp = (EditText) findViewById(R.id.inputnohpDaftar);
         txtPassword1 = (EditText) findViewById(R.id.inputpasswordDaftar);
         txtPassword2 = (EditText) findViewById(R.id.inputpassword2Daftar);

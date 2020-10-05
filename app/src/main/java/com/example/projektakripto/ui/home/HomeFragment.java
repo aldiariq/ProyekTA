@@ -1,10 +1,13 @@
 package com.example.projektakripto.ui.home;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +25,8 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
+    private SharedPreferences preference;
+
     private TextView tvnamahalaman;
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
 
@@ -35,7 +40,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getNamahalamanhome().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                tvnamahalaman.setText(s);
+                tvnamahalaman.setText(s + preference.getString("nama_pengguna", null));
             }
         });
 
@@ -43,7 +48,8 @@ public class HomeFragment extends Fragment {
         cvpenyimpanan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_penyimpanan, null);
+                Toast.makeText(getContext(), "Halaman Penyimpanan", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_halaman_utama_to_nav_penyimpanan);
             }
         });
 
@@ -51,7 +57,8 @@ public class HomeFragment extends Fragment {
         cvtentangaplikasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_tentangaplikasi, null);
+                Toast.makeText(getContext(), "Halaman Tentang Aplikasi", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_halaman_utama_to_nav_tentangaplikasi);
             }
         });
 
@@ -59,7 +66,8 @@ public class HomeFragment extends Fragment {
         cvgantipassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.createNavigateOnClickListener(R.id.action_nav_halaman_utama_to_nav_ganti_password, null);
+                Toast.makeText(getContext(), "Halaman Ganti Password", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_halaman_utama_to_nav_ganti_password);
             }
         });
 
@@ -76,6 +84,7 @@ public class HomeFragment extends Fragment {
 
     //Inisialisasi Komponen View
     private void initView(View view){
+        preference = PreferenceManager.getDefaultSharedPreferences(getContext());
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_home);
         cvpenyimpanan = (CardView) view.findViewById(R.id.cvpenyimpanan_halaman_utama);
         cvtentangaplikasi = (CardView) view.findViewById(R.id.cvtentangaplikasi_halaman_utama);

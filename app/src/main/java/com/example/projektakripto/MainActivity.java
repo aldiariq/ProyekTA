@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putBoolean("sudah_masuk", true);
                                 editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
                                 editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
+                                editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());
                                 editor.putString("nohp_pengguna",pengguna.get(0).getNohp_pengguna());
                                 editor.apply();
 

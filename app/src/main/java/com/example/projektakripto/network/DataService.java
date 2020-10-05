@@ -35,6 +35,7 @@ public interface DataService {
     @POST(Server.API_DAFTAR)
     Call<ResponseDaftar> apiDaftar(
             @Field("email") String email,
+            @Field("nama") String nama,
             @Field("nohp") String nohp,
             @Field("password") String password,
             @Field("kunciprivate") String kunciprivate,
