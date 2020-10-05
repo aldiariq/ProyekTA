@@ -13,13 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import com.example.projektakripto.R;
-import com.example.projektakripto.ui.penyimpanan.PenyimpananFragment;
 
 public class HomeFragment extends Fragment {
 
