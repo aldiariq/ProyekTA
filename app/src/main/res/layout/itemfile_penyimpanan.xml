@@ -32,19 +32,19 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/iv_download_itemfile"
+                android:id="@+id/img_download_itemfile"
                 android:src="@drawable/icondownload"
                 android:layout_margin="5dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp">
+                android:layout_width="30dp"
+                android:layout_height="30dp">
             </ImageView>
 
             <ImageView
-                android:id="@+id/iv_delete_itemfile"
+                android:id="@+id/img_delete_itemfile"
                 android:src="@drawable/icondelete"
                 android:layout_margin="5dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp">
+                android:layout_width="30dp"
+                android:layout_height="30dp">
             </ImageView>
 
         </LinearLayout>

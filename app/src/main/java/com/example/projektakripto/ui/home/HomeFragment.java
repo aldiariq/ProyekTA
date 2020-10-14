@@ -24,6 +24,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
 
     private SharedPreferences preference;
+    private SharedPreferences.Editor editor;
 
     private TextView tvnamahalaman;
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
@@ -73,6 +74,11 @@ public class HomeFragment extends Fragment {
         cvkeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                editor.putBoolean("sudah_masuk", false);
+                editor.putString("id_pengguna", "");
+                editor.putString("email_pengguna", "");
+                editor.putString("nohp_pengguna", "");
+                editor.apply();
                 System.exit(0);
             }
         });
@@ -83,6 +89,7 @@ public class HomeFragment extends Fragment {
     //Inisialisasi Komponen View
     private void initView(View view){
         preference = PreferenceManager.getDefaultSharedPreferences(getContext());
+        editor = preference.edit();
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_home);
         cvpenyimpanan = (CardView) view.findViewById(R.id.cvpenyimpanan_halaman_utama);
         cvtentangaplikasi = (CardView) view.findViewById(R.id.cvtentangaplikasi_halaman_utama);

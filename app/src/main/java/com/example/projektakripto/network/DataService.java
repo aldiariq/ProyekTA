@@ -1,5 +1,6 @@
 package com.example.projektakripto.network;
 
+import com.example.projektakripto.model.FilePengguna;
 import com.example.projektakripto.response.ResponseDaftar;
 import com.example.projektakripto.response.ResponseDeleteFile;
 import com.example.projektakripto.response.ResponseDownloadFile;
@@ -9,6 +10,8 @@ import com.example.projektakripto.response.ResponseGetKunciRSA;
 import com.example.projektakripto.response.ResponseKeluar;
 import com.example.projektakripto.response.ResponseMasuk;
 import com.example.projektakripto.response.ResponseUploadFile;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -77,7 +80,7 @@ public interface DataService {
     );
 
     @GET(Server.API_GETFILE + "{id_pengguna}")
-    Call<ResponseGetFile> apiGetfile(
+    Call<ResponseGetFile<List<FilePengguna>>> apiGetfile(
             @Path("id_pengguna") String id_pengguna
     );
 
