@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.os.Environment.DIRECTORY_DCIM;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class PenyimpananFragment extends Fragment implements OnDownloadClickListener, OnDeleteClickListener {
@@ -286,7 +288,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             if (passwordblowfish.equals(filePenggunas.get(0).getKunci_file())){
                                 downloadManagerrequest = new DownloadManager.Request(Uri.parse(lokasifile));
                                 downloadManagerrequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                                        .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS + File.separator, lokasifile)
+//                                        .setDestinationInExternalFilesDir(getContext(), DIRECTORY_DOWNLOADS + File.separator, lokasifile)
+                                        .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS , filePenggunas.get(0).getNama_file())
                                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
                                 downloadManager.enqueue(downloadManagerrequest);
@@ -296,12 +299,10 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                 Toast.makeText(getContext(), namafilepengguna, Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getContext(), namafilepengguna.replace(".enc", ""), Toast.LENGTH_SHORT).show();
 
-
-
-                                String fileenkripsihasildownload = "/storage/emulated/0/" + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
+                                String fileenkripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
                                 File filepengguna = new File(fileenkripsihasildownload);
 
-                                String filedekripsihasildownload = "/storage/emulated/0/" + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
+                                String filedekripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
 
                                 Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
                                 dekripsiblowfish.decrypt(fileenkripsihasildownload, filedekripsihasildownload);
