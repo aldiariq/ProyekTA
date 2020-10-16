@@ -1,5 +1,6 @@
 package com.example.projektakripto.ui.home;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.example.projektakripto.MainActivity;
 import com.example.projektakripto.R;
 
 public class HomeFragment extends Fragment {
@@ -79,7 +81,9 @@ public class HomeFragment extends Fragment {
                 editor.putString("email_pengguna", "");
                 editor.putString("nohp_pengguna", "");
                 editor.apply();
-                System.exit(0);
+                getActivity().finish();
+                Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);
+                startActivity(pindahkehalamanmasuk);
             }
         });
 

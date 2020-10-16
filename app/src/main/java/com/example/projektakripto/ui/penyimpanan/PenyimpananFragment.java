@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,13 +37,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projektakripto.R;
 import com.example.projektakripto.adapter.FilePenggunaAdapter;
 import com.example.projektakripto.algoritma.blowfish.Blowfish;
+import com.example.projektakripto.algoritma.rsa.RSA;
 import com.example.projektakripto.model.FilePengguna;
+import com.example.projektakripto.model.KunciRSA;
 import com.example.projektakripto.network.DataService;
 import com.example.projektakripto.network.Server;
 import com.example.projektakripto.network.ServiceGenerator;
 import com.example.projektakripto.response.ResponseDeleteFile;
 import com.example.projektakripto.response.ResponseDownloadFile;
 import com.example.projektakripto.response.ResponseGetFile;
+import com.example.projektakripto.response.ResponseGetKunciRSA;
 import com.example.projektakripto.response.ResponseUploadFile;
 import com.example.projektakripto.utils.FileUtils;
 import com.example.projektakripto.utils.OnDeleteClickListener;
@@ -50,6 +54,7 @@ import com.example.projektakripto.utils.OnDownloadClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +65,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.os.Environment.DIRECTORY_DCIM;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class PenyimpananFragment extends Fragment implements OnDownloadClickListener, OnDeleteClickListener {
@@ -88,6 +92,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private ArrayList<FilePengguna> filePenggunas = new ArrayList<>();
     private DownloadManager downloadManager;
     private DownloadManager.Request downloadManagerrequest;
+
+    private String id_pengguna;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -126,36 +132,54 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             Blowfish enkripsiblowfish = new Blowfish(passwordblowfish);
                             enkripsiblowfish.encrypt(lokasifileinput, lokasifileoutput);
 
-                            File filehasilenkripsi = new File(lokasifileoutput);
-                            RequestBody requestBodynamafile = RequestBody.create(MediaType.parse("text/plain"), filehasilenkripsi.getName());
-                            RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
-                            RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), passwordblowfish);
-
-                            RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
-                            MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
-
-                            Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, idPengguna, kunciFile, fileEnkripsi);
-                            callUpload.enqueue(new Callback<ResponseUploadFile>() {
+                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(id_pengguna);
+                            getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
                                 @Override
-                                public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
-                                    //Pengecekan Response Code
-                                    if (response.code() == 200){
-                                        //Pengecekan Status dari Response Body
-                                        if (response.body().isBerhasil()){
-                                            Toast.makeText(getContext(), "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
-                                            filehasilenkripsi.delete();
-                                            loadData();
-                                        }else {
-                                            Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                public void onResponse(Call<ResponseGetKunciRSA> call, Response<ResponseGetKunciRSA> response) {
+                                    List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
+                                    String kunciprivate = kunciRSA.get(0).getKunci_private();
+                                    String kuncipublic = kunciRSA.get(0).getKunci_public();
+                                    String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
+
+                                    RSA enkripsirsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
+
+                                    File filehasilenkripsi = new File(lokasifileoutput);
+                                    RequestBody requestBodynamafile = RequestBody.create(MediaType.parse("text/plain"), filehasilenkripsi.getName());
+                                    RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
+                                    RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), enkripsirsa.encrypt(passwordblowfish));
+
+                                    RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
+                                    MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
+
+                                    Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, idPengguna, kunciFile, fileEnkripsi);
+                                    callUpload.enqueue(new Callback<ResponseUploadFile>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
+                                            //Pengecekan Response Code
+                                            if (response.code() == 200){
+                                                //Pengecekan Status dari Response Body
+                                                if (response.body().isBerhasil()){
+                                                    Toast.makeText(getContext(), "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
+                                                    filehasilenkripsi.delete();
+                                                    loadData();
+                                                }else {
+                                                    Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }else {
+                                                Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }else {
-                                        Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
-                                    }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
+                                            Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                                 }
 
                                 @Override
-                                public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
-                                    Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_LONG).show();
+                                public void onFailure(Call<ResponseGetKunciRSA> call, Throwable t) {
+                                    Toast.makeText(getContext(), "Gagal Mendekripsi File", Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -205,6 +229,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         filePenggunaAdapter.setOnDownloadClickListener(this);
         filePenggunaAdapter.setOnDeleteClickListener(this);
         downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        id_pengguna = preference.getString("id_pengguna", "");
     }
 
     //Method Load Data Pengguna
@@ -262,7 +287,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     @Override
     public void onDownloadClick(int position) {
-        String id_pengguna = preference.getString("id_pengguna", "");
         String id_file = filePenggunas.get(position).getId_file();
 
         Call<ResponseDownloadFile> downloadFile = dataService.apiDownloadfile(id_pengguna, id_file);
@@ -271,8 +295,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
             public void onResponse(Call<ResponseDownloadFile> call, Response<ResponseDownloadFile> response) {
                 //Pengecekan Response Code
                 if (response.code() == 200){
-                    List<FilePengguna> filePenggunas = (List<FilePengguna>) response.body().getFile_pengguna();
-                    String lokasifile = Server.BASE_URL + "FilePengguna/" + filePenggunas.get(0).getNama_file();
+                    List<FilePengguna> downloadfilePenggunas = (List<FilePengguna>) response.body().getFile_pengguna();
+                    String lokasifile = Server.BASE_URL + "FilePengguna/" + downloadfilePenggunas.get(0).getNama_file();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                     LayoutInflater inflater = getLayoutInflater();
@@ -283,34 +307,71 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                     dialog.setPositiveButton("Download", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             String passwordblowfish = etpasswordblowfishformdownload.getText().toString().trim();
 
-                            if (passwordblowfish.equals(filePenggunas.get(0).getKunci_file())){
-                                downloadManagerrequest = new DownloadManager.Request(Uri.parse(lokasifile));
-                                downloadManagerrequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-//                                        .setDestinationInExternalFilesDir(getContext(), DIRECTORY_DOWNLOADS + File.separator, lokasifile)
-                                        .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS , filePenggunas.get(0).getNama_file())
-                                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(id_pengguna);
+                            getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
+                                @Override
+                                public void onResponse(Call<ResponseGetKunciRSA> call, Response<ResponseGetKunciRSA> response) {
+                                    List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
+                                    String kunciprivate = kunciRSA.get(0).getKunci_private();
+                                    String kuncipublic = kunciRSA.get(0).getKunci_public();
+                                    String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 
-                                downloadManager.enqueue(downloadManagerrequest);
+                                    RSA dekriprsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
 
-                                String namafilepengguna = URLUtil.guessFileName(lokasifile, null,MimeTypeMap.getFileExtensionFromUrl(lokasifile));
+                                    String hasildekrip = dekriprsa.decrypt(downloadfilePenggunas.get(0).getKunci_file());
 
-                                Toast.makeText(getContext(), namafilepengguna, Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getContext(), namafilepengguna.replace(".enc", ""), Toast.LENGTH_SHORT).show();
+                                    if (hasildekrip.equals(passwordblowfish)){
+                                        downloadManagerrequest = new DownloadManager.Request(Uri.parse(lokasifile));
+                                        downloadManagerrequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                                                .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS , filePenggunas.get(0).getNama_file())
+                                                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                                String fileenkripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
-                                File filepengguna = new File(fileenkripsihasildownload);
+                                        long downloadId = downloadManager.enqueue(downloadManagerrequest);
 
-                                String filedekripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
+                                        String namafilepengguna = URLUtil.guessFileName(lokasifile, null, MimeTypeMap.getFileExtensionFromUrl(lokasifile));
 
-                                Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
-                                dekripsiblowfish.decrypt(fileenkripsihasildownload, filedekripsihasildownload);
+                                        String fileenkripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
+                                        File filepengguna = new File(fileenkripsihasildownload);
+
+                                        String filedekripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
+
+                                        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadId));
+
+                                        if (cursor != null && cursor.moveToNext()) {
+                                            int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                                            cursor.close();
+
+                                            if (status == DownloadManager.STATUS_FAILED) {
+                                                // do something when failed
+                                            }
+                                            else if (status == DownloadManager.STATUS_PENDING || status == DownloadManager.STATUS_PAUSED) {
+                                                // do something pending or paused
+                                            }
+                                            else if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                                                Toast.makeText(getContext(), "Download Selesai", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (status == DownloadManager.STATUS_RUNNING) {
+                                                // do something when running
+                                            }
+                                        }
+
+                                        Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
+                                        dekripsiblowfish.decrypt(fileenkripsihasildownload, filedekripsihasildownload);
 
 //                                filepengguna.delete();
-                            }else {
-                                Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
-                            }
+                                    }else {
+                                        Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseGetKunciRSA> call, Throwable t) {
+                                    Toast.makeText(getContext(), "Gagal Mendekripsi File", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                             dialog.dismiss();
                         }
@@ -333,7 +394,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
             @Override
             public void onFailure(Call<ResponseDownloadFile> call, Throwable t) {
-                Toast.makeText(getContext(), "Gagal Mendownload File", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Gagal Mendownload File Pengguna", Toast.LENGTH_SHORT).show();
             }
         });
     }

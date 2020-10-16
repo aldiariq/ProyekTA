@@ -13,7 +13,7 @@ public class ResponseDownloadFile<T> {
         return file_pengguna;
     }
 
-    public void setFile_pengguna(List<FilePengguna> file_pengguna) {
+    public void setFile_pengguna(List<FilePengguna> download_file_pengguna) {
         this.file_pengguna = file_pengguna;
     }
 }

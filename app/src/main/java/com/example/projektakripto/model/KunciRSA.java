@@ -20,12 +20,16 @@ public class KunciRSA implements Parcelable {
     @SerializedName("kunci_public")
     private String kunci_public;
 
+    @SerializedName("kunci_modulus")
+    private String kunci_modulus;
+
     //Constructor Model KunciRSA
     protected KunciRSA(Parcel in) {
         id_kunci = in.readString();
         id_pengguna = in.readString();
         kunci_private = in.readString();
         kunci_public = in.readString();
+        kunci_modulus = in.readString();
     }
 
     //Proses Penulisan Atribut Model Pengguna
@@ -35,6 +39,7 @@ public class KunciRSA implements Parcelable {
         dest.writeString(id_pengguna);
         dest.writeString(kunci_private);
         dest.writeString(kunci_public);
+        dest.writeString(kunci_modulus);
     }
 
     public static final Creator<KunciRSA> CREATOR = new Creator<KunciRSA>() {
@@ -85,5 +90,13 @@ public class KunciRSA implements Parcelable {
 
     public void setKunci_public(String kunci_public) {
         this.kunci_public = kunci_public;
+    }
+
+    public String getKunci_modulus() {
+        return kunci_modulus;
+    }
+
+    public void setKunci_modulus(String kunci_modulus) {
+        this.kunci_modulus = kunci_modulus;
     }
 }
