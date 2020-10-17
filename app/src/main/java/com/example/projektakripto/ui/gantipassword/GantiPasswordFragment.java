@@ -12,10 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.projektakripto.R;
 import com.example.projektakripto.network.DataService;
@@ -28,8 +25,6 @@ import retrofit2.Response;
 
 public class GantiPasswordFragment extends Fragment {
 
-    private GantiPasswordViewModel gantiPasswordViewModel;
-
     private TextView tvnamahalaman;
     private EditText passwordLama, passwordBaru1, passwordBaru2;
     private Button btnSimpan;
@@ -40,18 +35,10 @@ public class GantiPasswordFragment extends Fragment {
     public DataService dataService;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        gantiPasswordViewModel =  ViewModelProviders.of(this).get(GantiPasswordViewModel.class);
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
-
-        gantiPasswordViewModel.getnamaHalamangantipassword().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                tvnamahalaman.setText(s);
-            }
-        });
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override

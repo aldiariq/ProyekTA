@@ -30,8 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,7 +68,6 @@ import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class PenyimpananFragment extends Fragment implements OnDownloadClickListener, OnDeleteClickListener {
 
-    private PenyimpananViewModel penyimpananViewModel;
     private TextView tvnamahalaman;
     private DataService dataService;
     private FilePenggunaAdapter filePenggunaAdapter;
@@ -98,7 +95,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        penyimpananViewModel =  ViewModelProviders.of(this).get(PenyimpananViewModel.class);
         View root = inflater.inflate(R.layout.penyimpanan_fragment, container, false);
 
         //Memanggil Method Inisialisasi Komponen View
@@ -232,12 +228,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
             }
         });
 
-        penyimpananViewModel.getNamahalamanpenyimpanan().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                tvnamahalaman.setText(s);
-            }
-        });
         return root;
     }
 

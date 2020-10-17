@@ -9,59 +9,34 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.projektakripto.R;
 
 public class TentangAplikasiFragment extends Fragment {
-
-    private TentangAplikasiViewModel tentangAplikasiViewModel;
 
     public static TentangAplikasiFragment newInstance() {
         return new TentangAplikasiFragment();
     }
 
     private TextView tvtentangAplikasi;
-    private TextView tvpembimbingAplikasi;
-    private TextView tvpembuatAplikasi;
+    private TextView tvpembimbing1Aplikasi;
+    private TextView tvpembimbing2Aplikasi;
+    private TextView tvmahasiswaAplikasi;
     private TextView tvintroAplikasi;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        tentangAplikasiViewModel =  ViewModelProviders.of(this).get(TentangAplikasiViewModel.class);
         View root = inflater.inflate(R.layout.tentang_aplikasi_fragment, container, false);
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
 
-        tentangAplikasiViewModel.gettentangAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                tvtentangAplikasi.setText(s);
-            }
-        });
-
-        tentangAplikasiViewModel.getpembimbingTugasakhir().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tvpembimbingAplikasi.setText("Pembimbing Tugas Akhir : " + s);
-            }
-        });
-
-        tentangAplikasiViewModel.getpembuatAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tvpembuatAplikasi.setText("Pembuat Aplikasi : " + s);
-            }
-        });
-
-        tentangAplikasiViewModel.getintroAplikasi().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tvintroAplikasi.setText(s);
-            }
-        });
+        //Menampilkan Variabel ke Fragment Tentang Aplikasi
+        tvtentangAplikasi.setText(getResources().getString(R.string.nama_aplikasi));
+        tvpembimbing1Aplikasi.setText("Pembimbing 1 : " + getResources().getString(R.string.nama_pembimbing_1));
+        tvpembimbing2Aplikasi.setText("Pembimbing 2 : " + getResources().getString(R.string.nama_pembimbing_2));
+        tvmahasiswaAplikasi.setText("Mahasiswa : " + getResources().getString(R.string.nama_mahasiswa));
+        tvintroAplikasi.setText(getResources().getString(R.string.intro_aplikasi));
 
         return root;
     }
@@ -69,8 +44,9 @@ public class TentangAplikasiFragment extends Fragment {
     //Inisialisasi Komponen View
     private void initView(View view){
         tvtentangAplikasi = view.findViewById(R.id.tv_tentang_tentangaplikasi);
-        tvpembimbingAplikasi = view.findViewById(R.id.tv_pembimbing_tentangaplikasi);
-        tvpembuatAplikasi = view.findViewById(R.id.tv_pembuat_tentangaplikasi);
+        tvpembimbing1Aplikasi = view.findViewById(R.id.tv_pembimbing_1_tentangaplikasi);
+        tvpembimbing2Aplikasi = view.findViewById(R.id.tv_pembimbing_2_tentangaplikasi);
+        tvmahasiswaAplikasi = view.findViewById(R.id.tv_mahasiswa_tentangaplikasi);
         tvintroAplikasi = view.findViewById(R.id.tv_intro_tentangaplikasi);
     }
 

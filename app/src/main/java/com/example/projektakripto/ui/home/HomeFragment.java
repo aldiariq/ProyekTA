@@ -11,19 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import com.example.projektakripto.MainActivity;
 import com.example.projektakripto.R;
 
 public class HomeFragment extends Fragment {
-
-    private HomeViewModel homeViewModel;
 
     private SharedPreferences preference;
     private SharedPreferences.Editor editor;
@@ -32,18 +27,12 @@ public class HomeFragment extends Fragment {
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =  ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_halaman_utama, container, false);
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
 
-        homeViewModel.getNamahalamanhome().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                tvnamahalaman.setText(s + preference.getString("nama_pengguna", null));
-            }
-        });
+        tvnamahalaman.setText("Selamat Datang, " + preference.getString("nama_pengguna", ""));
 
         //Listener Click CardView Penyimpanan
         cvpenyimpanan.setOnClickListener(new View.OnClickListener() {
