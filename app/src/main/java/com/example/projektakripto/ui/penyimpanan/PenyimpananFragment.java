@@ -163,16 +163,16 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                                     filehasilenkripsi.delete();
                                                     loadData();
                                                 }else {
-                                                    Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Gagal Mengupload File 1", Toast.LENGTH_SHORT).show();
                                                 }
                                             }else {
-                                                Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), "Gagal Mengupload File 2", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
-                                            Toast.makeText(getContext(), "Gagal Mengupload File", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getContext(), "Gagal Mengupload File 3", Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
@@ -204,7 +204,12 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 imgpilihfileformupload.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deteksiPermissionandroid();
+                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                            pilihFile();
+                        }else {
+                            deteksiPermissionandroid();
+                        }
                     }
                 });
             }
@@ -323,47 +328,58 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
                                     String hasildekrip = dekriprsa.decrypt(downloadfilePenggunas.get(0).getKunci_file());
 
-                                    if (hasildekrip.equals(passwordblowfish)){
-                                        downloadManagerrequest = new DownloadManager.Request(Uri.parse(lokasifile));
-                                        downloadManagerrequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                                                .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS , filePenggunas.get(0).getNama_file())
-                                                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                                        if (hasildekrip.equals(passwordblowfish)){
+                                            downloadManagerrequest = new DownloadManager.Request(Uri.parse(lokasifile));
+                                            downloadManagerrequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                                                    .setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS , downloadfilePenggunas.get(0).getNama_file())
+                                                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                                        long downloadId = downloadManager.enqueue(downloadManagerrequest);
+                                            downloadManager.enqueue(downloadManagerrequest);
 
-                                        String namafilepengguna = URLUtil.guessFileName(lokasifile, null, MimeTypeMap.getFileExtensionFromUrl(lokasifile));
+//                                        long downloadId = downloadManager.enqueue(downloadManagerrequest);
 
-                                        String fileenkripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
-                                        File filepengguna = new File(fileenkripsihasildownload);
+                                            String namafilepengguna = URLUtil.guessFileName(lokasifile, null, MimeTypeMap.getFileExtensionFromUrl(lokasifile));
 
-                                        String filedekripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
+                                            String fileenkripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna;
+                                            File filepengguna = new File(fileenkripsihasildownload);
 
-                                        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadId));
+                                            String filedekripsihasildownload = Environment.getExternalStorageDirectory() + File.separator + DIRECTORY_DOWNLOADS + File.separator + namafilepengguna.replace(".enc", "");
 
-                                        if (cursor != null && cursor.moveToNext()) {
-                                            int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                                            cursor.close();
+//                                        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadId));
+//
+//                                        if (cursor != null && cursor.moveToNext()) {
+//                                            int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+//                                            cursor.close();
+//
+//                                            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+//                                                Toast.makeText(getContext(), "Download Selesai", Toast.LENGTH_SHORT).show();
+//                                            }
 
-                                            if (status == DownloadManager.STATUS_FAILED) {
-                                                // do something when failed
-                                            }
-                                            else if (status == DownloadManager.STATUS_PENDING || status == DownloadManager.STATUS_PAUSED) {
-                                                // do something pending or paused
-                                            }
-                                            else if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                                                Toast.makeText(getContext(), "Download Selesai", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else if (status == DownloadManager.STATUS_RUNNING) {
-                                                // do something when running
-                                            }
-                                        }
+//                                            if (status == DownloadManager.STATUS_FAILED) {
+//                                                Toast.makeText(getContext(), "Download Gagal", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            else if (status == DownloadManager.STATUS_PENDING || status == DownloadManager.STATUS_PAUSED) {
+//                                                Toast.makeText(getContext(), "Download Pending", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            else if (status == DownloadManager.STATUS_SUCCESSFUL) {
+//                                                Toast.makeText(getContext(), "Download Selesai", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            else if (status == DownloadManager.STATUS_RUNNING) {
+//                                                Toast.makeText(getContext(), "Download Proses", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
 
                                         Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
                                         dekripsiblowfish.decrypt(fileenkripsihasildownload, filedekripsihasildownload);
 
 //                                filepengguna.delete();
+                                        }else {
+                                            Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
+                                        }
                                     }else {
-                                        Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
+                                        deteksiPermissionandroid();
                                     }
                                 }
 
@@ -429,7 +445,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 return;
             }
         }
-        this.pilihFile();
     }
 
     private void pilihFile() {
@@ -453,8 +468,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 // Permissions granted (CALL_PHONE).
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getContext(), "Akses File Diizinkan", Toast.LENGTH_SHORT).show();
-
-                    this.pilihFile();
                 }
                 // Cancelled or denied.
                 else {
