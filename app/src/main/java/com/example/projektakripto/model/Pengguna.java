@@ -17,15 +17,11 @@ public class Pengguna implements Parcelable {
     @SerializedName("nama_pengguna")
     private String nama_pengguna;
 
-    @SerializedName("nohp_pengguna")
-    private String nohp_pengguna;
-
     //Constructor Model Pengguna
     public Pengguna(Parcel in) {
         id_pengguna = in.readString();
         email_pengguna = in.readString();
         nama_pengguna = in.readString();
-        nohp_pengguna = in.readString();
     }
 
     public static final Creator<Pengguna> CREATOR = new Creator<Pengguna>() {
@@ -51,7 +47,6 @@ public class Pengguna implements Parcelable {
         dest.writeString(id_pengguna);
         dest.writeString(email_pengguna);
         dest.writeString(nama_pengguna);
-        dest.writeString(nohp_pengguna);
     }
 
     //Setter & Getter Atribut Model Pengguna
@@ -65,9 +60,5 @@ public class Pengguna implements Parcelable {
 
     public String getNama_pengguna() {
         return nama_pengguna;
-    }
-
-    public String getNohp_pengguna() {
-        return nohp_pengguna;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.projektakripto.ui.gantipassword;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.projektakripto.MainActivity;
 import com.example.projektakripto.R;
 import com.example.projektakripto.network.DataService;
 import com.example.projektakripto.network.ServiceGenerator;
@@ -59,6 +61,13 @@ public class GantiPasswordFragment extends Fragment {
                                 //Pengecekan Status dari Response Body
                                 if (response.body().isBerhasil()){
                                     Toast.makeText(getContext(), "Berhasil Mengganti Password", Toast.LENGTH_SHORT).show();
+                                    editor.putBoolean("sudah_masuk", false);
+                                    editor.putString("id_pengguna", "");
+                                    editor.putString("email_pengguna", "");
+                                    editor.apply();
+                                    getActivity().finish();
+                                    Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);
+                                    startActivity(pindahkehalamanmasuk);
                                 }else {
                                     Toast.makeText(getContext(), "Gagal Mengganti Password", Toast.LENGTH_SHORT).show();
                                 }

@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment {
                 editor.putBoolean("sudah_masuk", false);
                 editor.putString("id_pengguna", "");
                 editor.putString("email_pengguna", "");
-                editor.putString("nohp_pengguna", "");
                 editor.apply();
                 getActivity().finish();
                 Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);

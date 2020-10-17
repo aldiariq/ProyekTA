@@ -86,22 +86,6 @@
                 android:paddingBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputnohpDaftar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="No HP"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColorHint="@android:color/black"
-                android:paddingBottom="10dp">
-
-                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputpasswordDaftar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

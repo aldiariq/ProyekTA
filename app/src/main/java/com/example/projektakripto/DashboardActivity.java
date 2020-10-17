@@ -65,7 +65,6 @@ public class DashboardActivity extends AppCompatActivity {
                 editor.putBoolean("sudah_masuk", false);
                 editor.putString("id_pengguna", "");
                 editor.putString("email_pengguna", "");
-                editor.putString("nohp_pengguna", "");
                 editor.apply();
                 finish();
                 Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
