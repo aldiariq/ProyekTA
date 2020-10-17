@@ -124,6 +124,7 @@ public class Blowfish {
             outStream.write(cipher.doFinal());
             inStream.close();
             outStream.close();
+            encryptedFile.delete();
         } catch (IllegalBlockSizeException ex) {
             System.out.println(ex);
         } catch (BadPaddingException ex) {
