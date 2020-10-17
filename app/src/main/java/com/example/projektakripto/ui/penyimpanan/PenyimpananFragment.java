@@ -172,14 +172,13 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Inisialisasi File Hasil Enkripsi
                                     File filehasilenkripsi = new File(lokasifileoutput);
                                     //Inisialisasi Request Body untuk Dikirimkan ke API
-                                    RequestBody requestBodynamafile = RequestBody.create(MediaType.parse("text/plain"), filehasilenkripsi.getName());
                                     RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
                                     RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), enkripsirsa.encrypt(passwordblowfish));
                                     RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
                                     MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
 
                                     //Proses Upload File Hasil Enkripsi ke Server
-                                    Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(requestBodynamafile, idPengguna, kunciFile, fileEnkripsi);
+                                    Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(idPengguna, kunciFile, fileEnkripsi);
                                     callUpload.enqueue(new Callback<ResponseUploadFile>() {
                                         @Override
                                         public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
@@ -377,6 +376,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                                 public void onReceive(Context ctxt, Intent intent) {
                                                     Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
                                                     dekripsiblowfish.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
+                                                    Toast.makeText(getContext(), "Proses Unduh File Selesai", Toast.LENGTH_SHORT).show();
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));

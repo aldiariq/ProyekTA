@@ -67,7 +67,6 @@ public interface DataService {
     @Multipart
     @POST(Server.API_UPLOADFILE)
     Call<ResponseUploadFile> apiUploadfile(
-            @Part("nama_file") RequestBody nama_file,
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("kunci_file") RequestBody kunci_file,
             @Part MultipartBody.Part file_enkripsi
