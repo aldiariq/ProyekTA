@@ -276,9 +276,10 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     public void onDeleteClick(int position) {
         //Menampung id_file yang ada dalam Shared Preference
         String id_file = filePenggunas.get(position).getId_file();
+        String nama_file = filePenggunas.get(position).getNama_file();
 
         //Proses Penghapusan File Pengguna dari API
-        Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(id_file);
+        Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(id_file, nama_file, id_pengguna);
         deleteFile.enqueue(new Callback<ResponseDeleteFile>() {
             @Override
             public void onResponse(Call<ResponseDeleteFile> call, Response<ResponseDeleteFile> response) {
@@ -316,7 +317,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 if (response.code() == 200){
                     //Menampung File Pengguna yang Terenkripsi ke Dalam List
                     List<FilePengguna> downloadfilePenggunas = (List<FilePengguna>) response.body().getFile_pengguna();
-                    String urlfileEnkripsi = Server.BASE_URL + "FilePengguna/" + downloadfilePenggunas.get(0).getNama_file();
+                    String urlfileEnkripsi = Server.BASE_URL + "FilePengguna/" + downloadfilePenggunas.get(0).getId_pengguna() + "/" + downloadfilePenggunas.get(0).getNama_file();
 
                     //Inisialisasi Aler Dialog
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());

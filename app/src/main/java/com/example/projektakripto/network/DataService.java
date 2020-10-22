@@ -72,9 +72,12 @@ public interface DataService {
             @Part MultipartBody.Part file_enkripsi
     );
 
-    @GET(Server.API_DELETEFILE + "{id_file}")
+    @FormUrlEncoded
+    @POST(Server.API_DELETEFILE)
     Call<ResponseDeleteFile> apiDeletefile(
-            @Path("id_file") String id_file
+            @Field("id_file") String id_file,
+            @Field("nama_file") String nama_file,
+            @Field("id_pengguna") String id_pengguna
     );
 
     @GET(Server.API_GETFILE + "{id_pengguna}")
