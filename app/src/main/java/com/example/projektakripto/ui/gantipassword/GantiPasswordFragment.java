@@ -1,5 +1,6 @@
 package com.example.projektakripto.ui.gantipassword;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.projektakripto.DaftarActivity;
 import com.example.projektakripto.MainActivity;
 import com.example.projektakripto.R;
 import com.example.projektakripto.network.DataService;
@@ -36,6 +38,8 @@ public class GantiPasswordFragment extends Fragment {
 
     public DataService dataService;
 
+    private ProgressDialog progressDialog;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
 
@@ -45,6 +49,7 @@ public class GantiPasswordFragment extends Fragment {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog = ProgressDialog.show(getContext(), "Proses Ganti Password", "Silahkan Menunggu..");
                 String id_pengguna = preference.getString("id_pengguna", null);
                 String passwordlama = passwordLama.getText().toString().trim();
                 String passwordbaru1 = passwordBaru1.getText().toString().trim();
@@ -85,6 +90,7 @@ public class GantiPasswordFragment extends Fragment {
                     Toast.makeText(getContext(), "Pastikan Password Sama", Toast.LENGTH_SHORT).show();
                 }
                 resetInputan();
+                progressDialog.dismiss();
             }
         });
         return root;

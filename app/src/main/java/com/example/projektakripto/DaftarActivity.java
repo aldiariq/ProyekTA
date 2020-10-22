@@ -1,5 +1,6 @@
 package com.example.projektakripto;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class DaftarActivity extends AppCompatActivity {
     private EditText txtEmail, txtNama, txtPassword1, txtPassword2;
     private Button btnDaftar, btnMasuk;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,7 @@ public class DaftarActivity extends AppCompatActivity {
         btnDaftar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog = ProgressDialog.show(DaftarActivity.this, "Proses Daftar", "Silahkan Menunggu..");
                 //Inisialisasi Inputan Registrasi
                 String email, nama, nohp, password1, password2;
                 email = txtEmail.getText().toString();
@@ -78,7 +82,9 @@ public class DaftarActivity extends AppCompatActivity {
                 }else {
                     Toast.makeText(DaftarActivity.this, "Password Tidak Sama", Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
+
         });
 
         //Listener btnMasuk

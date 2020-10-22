@@ -1,5 +1,6 @@
 package com.example.projektakripto.ui.tentangaplikasi;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +25,13 @@ public class TentangAplikasiFragment extends Fragment {
     private TextView tvmahasiswaAplikasi;
     private TextView tvintroAplikasi;
 
+    private ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.tentang_aplikasi_fragment, container, false);
+
+        progressDialog = ProgressDialog.show(getContext(), "Proses Tentang Aplikasi", "Silahkan Menunggu..");
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
@@ -37,6 +42,8 @@ public class TentangAplikasiFragment extends Fragment {
         tvpembimbing2Aplikasi.setText("Pembimbing 2 : " + getResources().getString(R.string.nama_pembimbing_2));
         tvmahasiswaAplikasi.setText("Mahasiswa : " + getResources().getString(R.string.nama_mahasiswa));
         tvintroAplikasi.setText(getResources().getString(R.string.intro_aplikasi));
+
+        progressDialog.dismiss();
 
         return root;
     }

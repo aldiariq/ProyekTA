@@ -1,5 +1,6 @@
 package com.example.projektakripto;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText txtEmail, txtPassword;
     private Button btnMasuk, btnDaftar;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
+                progressDialog = ProgressDialog.show(MainActivity.this, "Proses Masuk", "Silahkan Menunggu..");
                 //Inisialisasi Inputan Registrasi
                 String email, password;
                 email = txtEmail.getText().toString().trim();
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             resetInputan();
                             Toast.makeText(MainActivity.this, "Gagal Masukdde", Toast.LENGTH_SHORT).show();
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Gagal Masukdd", Toast.LENGTH_SHORT).show();
                     }
                 });
+                progressDialog.dismiss();
             }
         });
 

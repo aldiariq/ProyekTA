@@ -3,6 +3,7 @@ package com.example.projektakripto.ui.penyimpanan;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -85,13 +86,15 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     private static final int MY_RESULT_CODE_FILECHOOSER = 2000;
-    private static final String LOG_TAG = "AndroidExample";
+
 
     private ArrayList<FilePengguna> filePenggunas = new ArrayList<>();
     private DownloadManager downloadManager;
     private DownloadManager.Request downloadManagerrequest;
 
     private String id_pengguna;
+
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -140,6 +143,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        progressDialog = ProgressDialog.show(getContext(), "Proses Upload File", "Silahkan Menunggu..");
                         //Inisialisasi Variabel Untuk Upload File
                         String lokasifileinput = txtlokasifileformupload.getText().toString();
                         String lokasifileoutput = txtlokasifileformupload.getText().toString() + ".enc";
@@ -209,8 +213,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     Toast.makeText(getContext(), "Gagal Mendekripsi File", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                             dialog.dismiss();
+                            progressDialog.dismiss();
                         }
                     }
                 });
@@ -274,6 +278,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     @Override
     public void onDeleteClick(int position) {
+        progressDialog = ProgressDialog.show(getContext(), "Proses Hapus File", "Silahkan Menunggu..");
         //Menampung id_file yang ada dalam Shared Preference
         String id_file = filePenggunas.get(position).getId_file();
         String nama_file = filePenggunas.get(position).getNama_file();
@@ -301,6 +306,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
             }
         });
+        progressDialog.dismiss();
     }
 
     @Override
@@ -333,6 +339,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                     dialog.setPositiveButton("Download", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            progressDialog = ProgressDialog.show(getActivity(), "Proses Download File", "Silahkan Menunggu..");
                             //Menampung Password Blowfish yang Diinputkan Pengguna
                             String passwordblowfish = etpasswordblowfishformdownload.getText().toString().trim();
 
@@ -395,7 +402,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     Toast.makeText(getContext(), "Gagal Mendekripsi File", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
+                            progressDialog.dismiss();
                             dialog.dismiss();
                         }
                     });
@@ -493,13 +500,11 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 if (resultCode == Activity.RESULT_OK ) {
                     if(data != null)  {
                         Uri fileUri = data.getData();
-                        Log.i(LOG_TAG, "Uri: " + fileUri);
 
                         String filePath = null;
                         try {
                             filePath = FileUtils.getPath(getContext(),fileUri);
                         } catch (Exception e) {
-                            Log.e(LOG_TAG,"Error: " + e);
                             Toast.makeText(getContext(), "Error: " + e, Toast.LENGTH_SHORT).show();
                         }
                         this.txtlokasifileformupload.setText(filePath);
