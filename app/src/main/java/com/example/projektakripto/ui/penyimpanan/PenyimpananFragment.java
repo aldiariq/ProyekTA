@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -388,6 +387,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
 
                                         }else {
                                             Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();

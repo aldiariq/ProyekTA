@@ -48,7 +48,7 @@ public class DaftarActivity extends AppCompatActivity {
                 password1 = txtPassword1.getText().toString();
                 password2 = txtPassword2.getText().toString();
 
-                RSA daftarRSA = new RSA(128);
+                RSA daftarRSA = new RSA(512);
 
                 if (password1.equals(password2)){
                     Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, password1, daftarRSA.getPrivatekey(), daftarRSA.getPublicKey(), daftarRSA.getModulus());
