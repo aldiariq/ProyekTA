@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_halaman_utama"
-        android:name="com.example.projektakripto.ui.home.HomeFragment"
+        android:name="com.aldiariq.projektakripto.ui.home.HomeFragment"
         android:label="@string/menu_halaman_utama"
         tools:layout="@layout/fragment_halaman_utama" >
         <action
@@ -23,19 +23,19 @@
 
     <fragment
         android:id="@+id/nav_penyimpanan"
-        android:name="com.example.projektakripto.ui.penyimpanan.PenyimpananFragment"
+        android:name="com.aldiariq.projektakripto.ui.penyimpanan.PenyimpananFragment"
         android:label="@string/menu_penyimpanan"
         tools:layout="@layout/penyimpanan_fragment" />
 
     <fragment
         android:id="@+id/nav_tentangaplikasi"
-        android:name="com.example.projektakripto.ui.tentangaplikasi.TentangAplikasiFragment"
+        android:name="com.aldiariq.projektakripto.ui.tentangaplikasi.TentangAplikasiFragment"
         android:label="@string/menu_tentangaplikasi"
         tools:layout="@layout/tentang_aplikasi_fragment" />
 
     <fragment
         android:id="@+id/nav_ganti_password"
-        android:name="com.example.projektakripto.ui.gantipassword.GantiPasswordFragment"
+        android:name="com.aldiariq.projektakripto.ui.gantipassword.GantiPasswordFragment"
         android:label="@string/menu_ganti_password"
         tools:layout="@layout/ganti_password_fragment" />
 </navigation>
