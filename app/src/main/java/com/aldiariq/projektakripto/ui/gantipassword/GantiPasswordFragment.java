@@ -73,23 +73,26 @@ public class GantiPasswordFragment extends Fragment {
                                     Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);
                                     startActivity(pindahkehalamanmasuk);
                                 }else {
-                                    Toast.makeText(getContext(), "Gagal Mengganti Password", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                    Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Password Lama Benar", Toast.LENGTH_SHORT).show();
                                 }
                             }else {
-                                Toast.makeText(getContext(), "Gagal Mengganti Password", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ResponseGantiPasswordPengguna> call, Throwable t) {
-                            Toast.makeText(getContext(), "Gagal Mengganti Password", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else {
-                    Toast.makeText(getContext(), "Pastikan Password Sama", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Password Sama", Toast.LENGTH_SHORT).show();
                 }
                 resetInputan();
-                progressDialog.dismiss();
             }
         });
         return root;

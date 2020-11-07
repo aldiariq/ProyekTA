@@ -91,24 +91,25 @@ public class MainActivity extends AppCompatActivity {
                             }else {
                                 //Memanggil Method Reset Inputan & Menampilkan Dialog
                                 resetInputan();
+                                progressDialog.dismiss();
                                 Toast.makeText(MainActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
                             }
                         }else {
                             //Memanggil Method Reset Inputan & Menampilkan Dialog
                             resetInputan();
-                            Toast.makeText(MainActivity.this, "Gagal Masukdde", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Gagal Masuk, Keterangan Tidak Diketahui", Toast.LENGTH_SHORT).show();
                         }
-                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseMasuk> call, Throwable t) {
                         //Memanggil Method Reset Inputan & Menampilkan Dialog
                         resetInputan();
-                        Toast.makeText(MainActivity.this, "Gagal Masukdd", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                     }
                 });
-                progressDialog.dismiss();
             }
         });
 

@@ -66,25 +66,27 @@ public class DaftarActivity extends AppCompatActivity {
                                     startActivity(masuk);
                                 }else {
                                     //Memanggil Method Reset Inputan & Menampilkan Dialog
+                                    progressDialog.dismiss();
                                     Toast.makeText(DaftarActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
                                 }
                             }else {
                                 //Memanggil Method Reset Inputan & Menampilkan Dialog
-                                Toast.makeText(DaftarActivity.this, "Gagal Masukdde", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Kesalahan Tidak Diketahui", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ResponseDaftar> call, Throwable t) {
-                            Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else {
-                    Toast.makeText(DaftarActivity.this, "Password Tidak Sama", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(DaftarActivity.this, "Pastikan Password Sama", Toast.LENGTH_SHORT).show();
                 }
-                progressDialog.dismiss();
             }
-
         });
 
         //Listener btnMasuk

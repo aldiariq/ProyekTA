@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -150,6 +151,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
                         //Pengecekan Apakah Variabel Sudah Terisi Semua atau Belum
                         if (lokasifileinput.isEmpty() || lokasifileoutput.isEmpty() || passwordblowfish.isEmpty()){
+                            progressDialog.dismiss();
                             Toast.makeText(getContext(), "Pastikan File Sudah Dipilih dan Password Sudah Diinputkan", Toast.LENGTH_SHORT).show();
                         }else {
                             //Inisialisasi Class Blowfish
@@ -189,31 +191,35 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                             if (response.code() == 200){
                                                 //Pengecekan Status dari Response Body
                                                 if (response.body().isBerhasil()){
+                                                    progressDialog.dismiss();
                                                     Toast.makeText(getContext(), "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
                                                     filehasilenkripsi.delete();
                                                     loadData();
                                                 }else {
-                                                    Toast.makeText(getContext(), "Gagal Mengupload File 1", Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                                                 }
                                             }else {
-                                                Toast.makeText(getContext(), "Gagal Mengupload File 2", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                                Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
-                                            Toast.makeText(getContext(), "Gagal Mengupload File 3", Toast.LENGTH_LONG).show();
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
 
                                 @Override
                                 public void onFailure(Call<ResponseGetKunciRSA> call, Throwable t) {
-                                    Toast.makeText(getContext(), "Gagal Mendekripsi File", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                    Toast.makeText(getContext(), "Gagal Mendekripsi File, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                                 }
                             });
                             dialog.dismiss();
-                            progressDialog.dismiss();
                         }
                     }
                 });
@@ -464,13 +470,18 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     //Method Untuk Menjalankan Intent/Activity Pemilihan File
     private void pilihFile() {
-        Intent chooseFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFileIntent.setType("application/*");
-        // Only return URIs that can be opened with ContentResolver
-        chooseFileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        String[] tipeFile =
+                {"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                        "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "text/plain",
+                        "application/pdf"};
 
-        chooseFileIntent = Intent.createChooser(chooseFileIntent, "Choose a file");
-        startActivityForResult(chooseFileIntent, MY_RESULT_CODE_FILECHOOSER);
+        Intent intentPilihfile = new Intent(Intent.ACTION_GET_CONTENT);
+        intentPilihfile.addCategory(Intent.CATEGORY_OPENABLE);
+        intentPilihfile.setType("*/*");
+        intentPilihfile.putExtra(Intent.EXTRA_MIME_TYPES, tipeFile);
+        startActivityForResult(Intent.createChooser(intentPilihfile,"Pilih File"), MY_RESULT_CODE_FILECHOOSER);
     }
 
     @Override

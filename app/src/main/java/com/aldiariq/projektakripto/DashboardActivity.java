@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -66,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity {
                 editor.putString("id_pengguna", "");
                 editor.putString("email_pengguna", "");
                 editor.apply();
+                Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
                 finish();
                 Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
                 startActivity(pindahkehalamanmasuk);
