@@ -2,7 +2,7 @@ package com.aldiariq.projektakripto.network;
 
 public class Server {
     //Inisialisasi Base Url Server Penyimpanan
-    public static String BASE_URL = "https://aldiariqrestfulapi.ddns.net/ProjekTAKripto/";
+    public static String BASE_URL = "https://aldiariqrestfulapi.000webhostapp.com/ProjekTAKripto/";
 
     //Inisialisasi Endpoint API Aplikasi
     public static final String API_INFO_APLIKASI = "api/infoaplikasi";
