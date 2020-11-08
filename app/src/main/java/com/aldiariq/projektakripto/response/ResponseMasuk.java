@@ -10,6 +10,8 @@ public class ResponseMasuk<T> {
     private boolean berhasil;
     @SerializedName("pesan")
     private String pesan;
+    @SerializedName("token")
+    private String token;
     @SerializedName("pengguna")
     private List<Pengguna> pengguna;
 
@@ -27,6 +29,14 @@ public class ResponseMasuk<T> {
 
     public void setPesan(String pesan) {
         this.pesan = pesan;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public List<Pengguna> getPengguna() {

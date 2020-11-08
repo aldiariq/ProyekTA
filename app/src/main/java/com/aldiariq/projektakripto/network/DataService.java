@@ -19,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -47,6 +48,7 @@ public interface DataService {
     @FormUrlEncoded
     @POST(Server.API_GANTIPASSWORD)
     Call<ResponseGantiPasswordPengguna> apiGantipassword(
+            @Header("Authorization") String Token,
             @Field("id_pengguna") String id_pengguna,
             @Field("password_lama") String passwordlama,
             @Field("password_baru") String passwordbaru
@@ -54,12 +56,14 @@ public interface DataService {
 
     @GET(Server.API_KELUAR + "{id_pengguna")
     Call<ResponseKeluar> apiKeluar(
+            @Header("Authorization") String Token,
             @Path("id_pengguna") String id_pengguna
     );
 
     //Implementasi Endpoint Algoritma RSA
     @GET(Server.API_GETKUNCIRSA + "{id_pengguna}")
     Call<ResponseGetKunciRSA> apiGetkuncirsa(
+            @Header("Authorization") String Token,
             @Path("id_pengguna") String id_pengguna
     );
 
@@ -67,6 +71,7 @@ public interface DataService {
     @Multipart
     @POST(Server.API_UPLOADFILE)
     Call<ResponseUploadFile> apiUploadfile(
+            @Header("Authorization") String Token,
             @Part("id_pengguna") RequestBody id_pengguna,
             @Part("kunci_file") RequestBody kunci_file,
             @Part MultipartBody.Part file_enkripsi
@@ -75,6 +80,7 @@ public interface DataService {
     @FormUrlEncoded
     @POST(Server.API_DELETEFILE)
     Call<ResponseDeleteFile> apiDeletefile(
+            @Header("Authorization") String Token,
             @Field("id_file") String id_file,
             @Field("nama_file") String nama_file,
             @Field("id_pengguna") String id_pengguna
@@ -82,11 +88,13 @@ public interface DataService {
 
     @GET(Server.API_GETFILE + "{id_pengguna}")
     Call<ResponseGetFile<List<FilePengguna>>> apiGetfile(
+            @Header("Authorization") String Token,
             @Path("id_pengguna") String id_pengguna
     );
 
     @GET(Server.API_DOWNLOADFILE + "{id_pengguna}" + "/" + "{id_file}")
     Call<ResponseDownloadFile> apiDownloadfile(
+            @Header("Authorization") String Token,
             @Path("id_pengguna") String id_pengguna,
             @Path("id_file") String id_file
     );

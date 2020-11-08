@@ -64,6 +64,7 @@ public class DashboardActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 //Destroy Activity & Menjalankan Activity MainActivity(Login)
                 editor.putBoolean("sudah_masuk", false);
+                editor.putString("token_pengguna", "");
                 editor.putString("id_pengguna", "");
                 editor.putString("email_pengguna", "");
                 editor.apply();

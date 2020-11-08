@@ -91,6 +91,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private DownloadManager downloadManager;
     private DownloadManager.Request downloadManagerrequest;
 
+    private String token_pengguna;
     private String id_pengguna;
 
     private ProgressDialog progressDialog;
@@ -159,7 +160,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             enkripsiblowfish.encrypt(lokasifileinput, lokasifileoutput);
 
                             //Proses Pengambilan Kunci RSA Pengguna dari API
-                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(id_pengguna);
+                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(token_pengguna, id_pengguna);
                             getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
                                 @Override
                                 public void onResponse(Call<ResponseGetKunciRSA> call, Response<ResponseGetKunciRSA> response) {
@@ -182,7 +183,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
 
                                     //Proses Upload File Hasil Enkripsi ke Server
-                                    Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(idPengguna, kunciFile, fileEnkripsi);
+                                    Call<ResponseUploadFile> callUpload = dataService.apiUploadfile(token_pengguna, idPengguna, kunciFile, fileEnkripsi);
                                     callUpload.enqueue(new Callback<ResponseUploadFile>() {
                                         @Override
                                         public void onResponse(Call<ResponseUploadFile> call, Response<ResponseUploadFile> response) {
@@ -248,18 +249,20 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         filePenggunaAdapter.setOnDownloadClickListener(this);
         filePenggunaAdapter.setOnDeleteClickListener(this);
         downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        token_pengguna = preference.getString("token_pengguna", "");
         id_pengguna = preference.getString("id_pengguna", "");
     }
 
     //Method Untuk Memuat Data Pengguna
     private void loadData(){
         //Menampung idPengguna yang ada dalam Shared Preference
+        String tokenPengguna = preference.getString("token_pengguna", null);
         String idPengguna = preference.getString("id_pengguna", null);
         filePenggunas.clear();
         filePenggunaAdapter.clear();
 
         //Proses Pengambilan File Pengguna dari API
-        Call<ResponseGetFile<List<FilePengguna>>> loadDatapengguna = dataService.apiGetfile(idPengguna);
+        Call<ResponseGetFile<List<FilePengguna>>> loadDatapengguna = dataService.apiGetfile(tokenPengguna, idPengguna);
         loadDatapengguna.enqueue(new Callback<ResponseGetFile<List<FilePengguna>>>() {
             @Override
             public void onResponse(Call<ResponseGetFile<List<FilePengguna>>> call, Response<ResponseGetFile<List<FilePengguna>>> response) {
@@ -288,7 +291,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         String nama_file = filePenggunas.get(position).getNama_file();
 
         //Proses Penghapusan File Pengguna dari API
-        Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(id_file, nama_file, id_pengguna);
+        Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(token_pengguna, id_file, nama_file, id_pengguna);
         deleteFile.enqueue(new Callback<ResponseDeleteFile>() {
             @Override
             public void onResponse(Call<ResponseDeleteFile> call, Response<ResponseDeleteFile> response) {
@@ -319,7 +322,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         String id_file = filePenggunas.get(position).getId_file();
 
         //Proses Download File Pengguna dari API
-        Call<ResponseDownloadFile> downloadFile = dataService.apiDownloadfile(id_pengguna, id_file);
+        Call<ResponseDownloadFile> downloadFile = dataService.apiDownloadfile(token_pengguna, id_pengguna, id_file);
         downloadFile.enqueue(new Callback<ResponseDownloadFile>() {
             @Override
             public void onResponse(Call<ResponseDownloadFile> call, Response<ResponseDownloadFile> response) {
@@ -348,7 +351,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             String passwordblowfish = etpasswordblowfishformdownload.getText().toString().trim();
 
                             //Proses Pengambilan Kunci RSA Pengguna dari API
-                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(id_pengguna);
+                            Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(token_pengguna, id_pengguna);
                             getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
                                 @Override
                                 public void onResponse(Call<ResponseGetKunciRSA> call, Response<ResponseGetKunciRSA> response) {

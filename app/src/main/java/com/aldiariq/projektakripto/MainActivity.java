@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                                     //Menampung Data Pengguna di Shared Preferences
                                     List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
                                     editor.putBoolean("sudah_masuk", true);
+                                    editor.putString("token_pengguna", response.body().getToken());
                                     editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
                                     editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
                                     editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());

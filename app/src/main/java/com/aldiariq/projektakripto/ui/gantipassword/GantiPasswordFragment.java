@@ -39,6 +39,9 @@ public class GantiPasswordFragment extends Fragment {
 
     private ProgressDialog progressDialog;
 
+    private String id_pengguna;
+    private String token_pengguna;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
 
@@ -49,14 +52,13 @@ public class GantiPasswordFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 progressDialog = ProgressDialog.show(getContext(), "Proses Ganti Password", "Silahkan Menunggu..");
-                String id_pengguna = preference.getString("id_pengguna", null);
                 String passwordlama = passwordLama.getText().toString().trim();
                 String passwordbaru1 = passwordBaru1.getText().toString().trim();
                 String passwordbaru2 = passwordBaru2.getText().toString().trim();
 
                 if (passwordbaru1.equals(passwordbaru2)){
                     //Inisialisasi dan Pemanggilan Method Call Retrofit
-                    Call<ResponseGantiPasswordPengguna> callGantipassword = dataService.apiGantipassword(id_pengguna, passwordlama, passwordbaru2);
+                    Call<ResponseGantiPasswordPengguna> callGantipassword = dataService.apiGantipassword(token_pengguna, id_pengguna, passwordlama, passwordbaru2);
                     callGantipassword.enqueue(new Callback<ResponseGantiPasswordPengguna>() {
                         @Override
                         public void onResponse(Call<ResponseGantiPasswordPengguna> call, Response<ResponseGantiPasswordPengguna> response) {
@@ -108,6 +110,8 @@ public class GantiPasswordFragment extends Fragment {
         passwordBaru1 = (EditText) view.findViewById(R.id.etpasswordbaru1Gantipassword);
         passwordBaru2 = (EditText) view.findViewById(R.id.etpasswordbaru2Gantipassword);
         btnSimpan = (Button) view.findViewById(R.id.btnsimpanpasswordGantipassword);
+        id_pengguna = preference.getString("id_pengguna", null);
+        token_pengguna = preference.getString("token_pengguna", null);
     }
 
     //Method Untuk Mengosongkan Field Inputan
