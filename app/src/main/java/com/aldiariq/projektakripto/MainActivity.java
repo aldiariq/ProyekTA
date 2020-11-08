@@ -66,50 +66,55 @@ public class MainActivity extends AppCompatActivity {
                 email = txtEmail.getText().toString().trim();
                 password = txtPassword.getText().toString().trim();
 
-                //Inisialisasi dan Pemanggilan Method Call Retrofit
-                Call<ResponseMasuk> callMasuk = dataService.apiMasuk(email, password);
-                callMasuk.enqueue(new Callback<ResponseMasuk>() {
-                    @Override
-                    public void onResponse(Call<ResponseMasuk> call, Response<ResponseMasuk> response) {
-                        //Pengecekan Response Code
-                        if (response.code() == 200){
-                            //Pengecekan Status dari Response Body
-                            if (response.body().isBerhasil()){
-                                //Menampung Data Pengguna di Shared Preferences
-                                List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
-                                editor.putBoolean("sudah_masuk", true);
-                                editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
-                                editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
-                                editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());
-                                editor.apply();
+                if (email.isEmpty() || password.isEmpty()){
+                    progressDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Pastikan Semua Inputan Terisi", Toast.LENGTH_SHORT).show();
+                }else {
+                    //Inisialisasi dan Pemanggilan Method Call Retrofit
+                    Call<ResponseMasuk> callMasuk = dataService.apiMasuk(email, password);
+                    callMasuk.enqueue(new Callback<ResponseMasuk>() {
+                        @Override
+                        public void onResponse(Call<ResponseMasuk> call, Response<ResponseMasuk> response) {
+                            //Pengecekan Response Code
+                            if (response.code() == 200){
+                                //Pengecekan Status dari Response Body
+                                if (response.body().isBerhasil()){
+                                    //Menampung Data Pengguna di Shared Preferences
+                                    List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
+                                    editor.putBoolean("sudah_masuk", true);
+                                    editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
+                                    editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
+                                    editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());
+                                    editor.apply();
 
-                                //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
-                                finish();
-                                Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
-                                Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
-                                startActivity(pindahkedashboard);
+                                    //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
+                                    finish();
+                                    Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
+                                    Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
+                                    startActivity(pindahkedashboard);
+                                }else {
+                                    //Memanggil Method Reset Inputan & Menampilkan Dialog
+                                    resetInputan();
+                                    progressDialog.dismiss();
+                                    Toast.makeText(MainActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                }
                             }else {
                                 //Memanggil Method Reset Inputan & Menampilkan Dialog
                                 resetInputan();
                                 progressDialog.dismiss();
-                                Toast.makeText(MainActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Password Benar", Toast.LENGTH_SHORT).show();
                             }
-                        }else {
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseMasuk> call, Throwable t) {
                             //Memanggil Method Reset Inputan & Menampilkan Dialog
                             resetInputan();
                             progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Gagal Masuk, Keterangan Tidak Diketahui", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseMasuk> call, Throwable t) {
-                        //Memanggil Method Reset Inputan & Menampilkan Dialog
-                        resetInputan();
-                        progressDialog.dismiss();
-                        Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                }
             }
         });
 

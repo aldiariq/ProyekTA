@@ -9,7 +9,7 @@
         android:id="@+id/nav_halaman_utama"
         android:name="com.aldiariq.projektakripto.ui.home.HomeFragment"
         android:label="@string/menu_halaman_utama"
-        tools:layout="@layout/fragment_halaman_utama" >
+        tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_nav_halaman_utama_to_nav_tentangaplikasi"
             app:destination="@id/nav_tentangaplikasi" />

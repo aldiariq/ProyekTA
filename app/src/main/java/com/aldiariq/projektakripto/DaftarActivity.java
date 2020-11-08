@@ -42,49 +42,54 @@ public class DaftarActivity extends AppCompatActivity {
             public void onClick(View view) {
                 progressDialog = ProgressDialog.show(DaftarActivity.this, "Proses Daftar", "Silahkan Menunggu..");
                 //Inisialisasi Inputan Registrasi
-                String email, nama, nohp, password1, password2;
+                String email, nama, password1, password2;
                 email = txtEmail.getText().toString();
                 nama = txtNama.getText().toString();
                 password1 = txtPassword1.getText().toString();
                 password2 = txtPassword2.getText().toString();
 
-                RSA daftarRSA = new RSA(512);
+                if(email.isEmpty() || nama.isEmpty() || password1.isEmpty() || password2.isEmpty()){
+                    progressDialog.dismiss();
+                    Toast.makeText(DaftarActivity.this, "Pastikan Semua Inputan Terisi", Toast.LENGTH_SHORT).show();
+                }else {
+                    RSA daftarRSA = new RSA(512);
 
-                if (password1.equals(password2)){
-                    Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, password1, daftarRSA.getPrivatekey(), daftarRSA.getPublicKey(), daftarRSA.getModulus());
-                    callDaftar.enqueue(new Callback<ResponseDaftar>() {
-                        @Override
-                        public void onResponse(Call<ResponseDaftar> call, Response<ResponseDaftar> response) {
-                            //Pengecekan Response Code
-                            if (response.code() == 200){
-                                //Pengecekan Status dari Response Body
-                                if (response.body().isBerhasil()){
-                                    Toast.makeText(DaftarActivity.this, "Berhasil Mendaftarkan Akun", Toast.LENGTH_SHORT).show();
-                                    //Destroy Activity & Menjalankan MainActivity(Login)
-                                    finish();
-                                    Intent masuk = new Intent(DaftarActivity.this, MainActivity.class);
-                                    startActivity(masuk);
+                    if (password1.equals(password2)){
+                        Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, password1, daftarRSA.getPrivatekey(), daftarRSA.getPublicKey(), daftarRSA.getModulus());
+                        callDaftar.enqueue(new Callback<ResponseDaftar>() {
+                            @Override
+                            public void onResponse(Call<ResponseDaftar> call, Response<ResponseDaftar> response) {
+                                //Pengecekan Response Code
+                                if (response.code() == 200){
+                                    //Pengecekan Status dari Response Body
+                                    if (response.body().isBerhasil()){
+                                        Toast.makeText(DaftarActivity.this, "Berhasil Mendaftarkan Akun", Toast.LENGTH_SHORT).show();
+                                        //Destroy Activity & Menjalankan MainActivity(Login)
+                                        finish();
+                                        Intent masuk = new Intent(DaftarActivity.this, MainActivity.class);
+                                        startActivity(masuk);
+                                    }else {
+                                        //Memanggil Method Reset Inputan & Menampilkan Dialog
+                                        progressDialog.dismiss();
+                                        Toast.makeText(DaftarActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }else {
                                     //Memanggil Method Reset Inputan & Menampilkan Dialog
                                     progressDialog.dismiss();
-                                    Toast.makeText(DaftarActivity.this, response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Kesalahan Tidak Diketahui", Toast.LENGTH_SHORT).show();
                                 }
-                            }else {
-                                //Memanggil Method Reset Inputan & Menampilkan Dialog
-                                progressDialog.dismiss();
-                                Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Kesalahan Tidak Diketahui", Toast.LENGTH_SHORT).show();
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ResponseDaftar> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
-                    progressDialog.dismiss();
-                    Toast.makeText(DaftarActivity.this, "Pastikan Password Sama", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(Call<ResponseDaftar> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else {
+                        progressDialog.dismiss();
+                        Toast.makeText(DaftarActivity.this, "Pastikan Password Sama", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

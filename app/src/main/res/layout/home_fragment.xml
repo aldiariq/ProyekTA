@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:scrollbars="none"
-    android:background="@drawable/shapegradientungu"
+
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
@@ -24,7 +24,7 @@
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="50dp">

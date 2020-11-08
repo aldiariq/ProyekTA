@@ -78,7 +78,7 @@ public class GantiPasswordFragment extends Fragment {
                                 }
                             }else {
                                 progressDialog.dismiss();
-                                Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Gagal Mengganti Password, Pastikan Password Lama Benar", Toast.LENGTH_SHORT).show();
                             }
                         }
 

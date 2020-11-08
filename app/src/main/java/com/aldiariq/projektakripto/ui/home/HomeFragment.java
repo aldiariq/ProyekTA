@@ -27,7 +27,7 @@ public class HomeFragment extends Fragment {
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_halaman_utama, container, false);
+        View root = inflater.inflate(R.layout.home_fragment, container, false);
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
