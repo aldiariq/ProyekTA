@@ -190,25 +190,20 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                             //Pengecekan Response Code
                                             if (response.code() == 200){
                                                 //Pengecekan Status dari Response Body
-                                                if (response.body().isBerhasil()){
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(getContext(), "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
-                                                    filehasilenkripsi.delete();
-                                                    loadData();
-                                                }else {
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
-                                                }
+                                                progressDialog.dismiss();
+                                                Toast.makeText(getContext(), "Berhasil Mengupload File", Toast.LENGTH_SHORT).show();
+                                                filehasilenkripsi.delete();
+                                                loadData();
                                             }else {
                                                 progressDialog.dismiss();
-                                                Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet 2", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
                                             progressDialog.dismiss();
-                                            Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet 3", Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
@@ -330,6 +325,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 if (response.code() == 200){
                     //Menampung File Pengguna yang Terenkripsi ke Dalam List
                     List<FilePengguna> downloadfilePenggunas = (List<FilePengguna>) response.body().getFile_pengguna();
+
                     String urlfileEnkripsi = Server.BASE_URL + "FilePengguna/" + downloadfilePenggunas.get(0).getId_pengguna() + "/" + downloadfilePenggunas.get(0).getNama_file();
 
                     //Inisialisasi Aler Dialog
@@ -395,6 +391,16 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+//                                            File filehasildekripsi = new File(namafilesetelahdidekripsi);
+//                                            MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+//                                            String ekstensifile = MimeTypeMap.getFileExtensionFromUrl(filehasildekripsi.getName());
+//                                            String tipefile = mimeTypeMap.getMimeTypeFromExtension(ekstensifile);
+//
+//                                            Intent intentBukafile = new Intent(Intent.ACTION_VIEW);
+//                                            Uri datafile = Uri.fromFile(filehasildekripsi);
+//                                            intentBukafile.setDataAndType(datafile, tipefile);
+//                                            startActivity(intentBukafile);
 
 
 

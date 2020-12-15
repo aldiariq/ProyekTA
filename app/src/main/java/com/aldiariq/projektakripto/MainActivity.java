@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             //Memanggil Method Reset Inputan & Menampilkan Dialog
                             resetInputan();
                             progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Terkoneksi Internet", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Gagal Masuk, Pastikan Terkoneksi Internet 1", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
