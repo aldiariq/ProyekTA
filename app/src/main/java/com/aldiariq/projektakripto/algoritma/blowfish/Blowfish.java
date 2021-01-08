@@ -1,5 +1,9 @@
 package com.aldiariq.projektakripto.algoritma.blowfish;
 
+import android.util.Log;
+
+import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -90,6 +94,9 @@ public class Blowfish {
             System.out.println(ex);
         }
 
+        //Pemanggilan Method Avalanche Effect
+        AvalancheEffect avalancheEffect = new AvalancheEffect(srcPath, destPath);
+        Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
         rawFile.delete();
     }
 

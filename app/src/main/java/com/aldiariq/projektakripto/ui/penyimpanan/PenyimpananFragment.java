@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.adapter.FilePenggunaAdapter;
+import com.aldiariq.projektakripto.algoritma.accesstime.AccessTime;
+import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
 import com.aldiariq.projektakripto.algoritma.blowfish.Blowfish;
 import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.model.FilePengguna;
@@ -96,6 +99,14 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     private ProgressDialog progressDialog;
 
+    private Blowfish blowfish;
+    private AccessTime accessTime;
+    private long waktuMulai;
+    private long waktuSelesai;
+    private RSA rsa;
+    private AvalancheEffect avalancheEffect;
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.penyimpanan_fragment, container, false);
@@ -155,10 +166,14 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             Toast.makeText(getContext(), "Pastikan File Sudah Dipilih dan Password Sudah Diinputkan", Toast.LENGTH_SHORT).show();
                         }else {
                             //Inisialisasi Class Blowfish
-                            Blowfish enkripsiblowfish = new Blowfish(passwordblowfish);
+                            blowfish = new Blowfish(passwordblowfish);
+                            waktuMulai = System.currentTimeMillis();
                             //Pemanggilan Method Enkripsi Blowfish
-                            enkripsiblowfish.encrypt(lokasifileinput, lokasifileoutput);
-
+                            blowfish.encrypt(lokasifileinput, lokasifileoutput);
+                            waktuSelesai = System.currentTimeMillis();
+                            //Penghitung Access Time
+                            accessTime = new AccessTime(waktuMulai, waktuSelesai);
+                            Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
                             //Proses Pengambilan Kunci RSA Pengguna dari API
                             Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(token_pengguna, id_pengguna);
                             getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
@@ -172,13 +187,13 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 
                                     //Inisialisasi Class RSA
-                                    RSA enkripsirsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
+                                    rsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
 
                                     //Inisialisasi File Hasil Enkripsi
                                     File filehasilenkripsi = new File(lokasifileoutput);
                                     //Inisialisasi Request Body untuk Dikirimkan ke API
                                     RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
-                                    RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), enkripsirsa.encrypt(passwordblowfish));
+                                    RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), rsa.encrypt(passwordblowfish));
                                     RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
                                     MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
 
@@ -359,10 +374,10 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 
                                     //Inisialisasi Class RSA
-                                    RSA dekriprsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
+                                    rsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
 
                                     //Menampung Hasil Dekripsi RSA dari Kunci File
-                                    String hasildekrip = dekriprsa.decrypt(downloadfilePenggunas.get(0).getKunci_file());
+                                    String hasildekrip = rsa.decrypt(downloadfilePenggunas.get(0).getKunci_file());
 
                                     //Pengecekan Apakah Aplikasi Sudah Diberi Izin Akses Membaca dan Menulis Penyimpanan
                                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
@@ -385,25 +400,12 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                             //Listener Ketika File yang Terenkripsi Sudah Selesai di Download
                                             BroadcastReceiver selesaiDownload = new BroadcastReceiver() {
                                                 public void onReceive(Context ctxt, Intent intent) {
-                                                    Blowfish dekripsiblowfish = new Blowfish(passwordblowfish);
-                                                    dekripsiblowfish.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
+                                                    blowfish = new Blowfish(passwordblowfish);
+                                                    blowfish.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
                                                     Toast.makeText(getContext(), "Proses Unduh File Selesai", Toast.LENGTH_SHORT).show();
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-//                                            File filehasildekripsi = new File(namafilesetelahdidekripsi);
-//                                            MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-//                                            String ekstensifile = MimeTypeMap.getFileExtensionFromUrl(filehasildekripsi.getName());
-//                                            String tipefile = mimeTypeMap.getMimeTypeFromExtension(ekstensifile);
-//
-//                                            Intent intentBukafile = new Intent(Intent.ACTION_VIEW);
-//                                            Uri datafile = Uri.fromFile(filehasildekripsi);
-//                                            intentBukafile.setDataAndType(datafile, tipefile);
-//                                            startActivity(intentBukafile);
-
-
-
                                         }else {
                                             Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
                                         }
