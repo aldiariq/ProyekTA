@@ -1,9 +1,7 @@
 package com.aldiariq.projektakripto.ui.home;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.security.crypto.MasterKeys;
 
-import com.aldiariq.projektakripto.DashboardActivity;
 import com.aldiariq.projektakripto.MainActivity;
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
 import com.aldiariq.projektakripto.response.ResponseKeluar;
+import com.aldiariq.projektakripto.utils.SharedPreferencesEncUtils;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,8 +31,8 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
-    private SharedPreferences preference;
-    private SharedPreferences.Editor editor;
+    private SharedPreferencesEncUtils sharedPreferencesEncUtils;
+    private String masterKeyAlias;
 
     private TextView tvnamahalaman;
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
@@ -43,7 +45,17 @@ public class HomeFragment extends Fragment {
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
 
-        tvnamahalaman.setText("Selamat Datang, " + preference.getString("nama_pengguna", ""));
+        String nama_pengguna = "";
+
+        try {
+            nama_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("nama_pengguna", "");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        tvnamahalaman.setText("Selamat Datang, " + nama_pengguna);
 
         //Listener Click CardView Penyimpanan
         cvpenyimpanan.setOnClickListener(new View.OnClickListener() {
@@ -73,11 +85,24 @@ public class HomeFragment extends Fragment {
         });
 
         //Listener Click CardView Keluar Aplikasi
+        String finalMasterKeyAlias = masterKeyAlias;
         cvkeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Menjalankan Endpoint Keluar Pengguna
-                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(preference.getString("token_pengguna", ""), preference.getString("id_pengguna", ""));
+                String token_pengguna = "";
+                String id_pengguna = "";
+
+                try {
+                    token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("token_pengguna", "");
+                    id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("id_pengguna", "");
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
                 callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
                     @Override
                     public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
@@ -85,13 +110,18 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200){
                             if (response.body().isBerhasil()){
                                 //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                                editor.putString("email_pengguna", "");
-                                editor.putString("token_pengguna", "");
-                                editor.putBoolean("sudah_masuk", false);
-                                editor.putString("nama_pengguna", "");
-                                editor.putString("kunci_private", "");
-                                editor.putString("id_pengguna", "");
-                                editor.apply();
+                                try {
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("email_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("token_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putBoolean("sudah_masuk", false).apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("nama_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("kunci_private", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("id_pengguna", "").apply();
+                                } catch (GeneralSecurityException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 Toast.makeText(getActivity(), "Berhasil Keluar", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
                                 Intent pindahkehalamanmasuk = new Intent(getActivity(), MainActivity.class);
@@ -118,9 +148,15 @@ public class HomeFragment extends Fragment {
 
     //Inisialisasi Komponen View
     private void initView(View view){
-        preference = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         dataService = (DataService) ServiceGenerator.createBaseService(getActivity(), DataService.class);
-        editor = preference.edit();
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_home);
         cvpenyimpanan = (CardView) view.findViewById(R.id.cvpenyimpanan_halaman_utama);
         cvtentangaplikasi = (CardView) view.findViewById(R.id.cvtentangaplikasi_halaman_utama);

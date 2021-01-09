@@ -2,9 +2,7 @@ package com.aldiariq.projektakripto.ui.gantipassword;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +13,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.security.crypto.MasterKeys;
 
 import com.aldiariq.projektakripto.MainActivity;
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
 import com.aldiariq.projektakripto.response.ResponseGantiPasswordPengguna;
+import com.aldiariq.projektakripto.utils.SharedPreferencesEncUtils;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,15 +35,15 @@ public class GantiPasswordFragment extends Fragment {
     private EditText passwordLama, passwordBaru1, passwordBaru2;
     private Button btnSimpan;
 
-    private SharedPreferences preference;
-    private SharedPreferences.Editor editor;
-
     public DataService dataService;
 
     private ProgressDialog progressDialog;
 
     private String id_pengguna;
     private String token_pengguna;
+
+    private SharedPreferencesEncUtils sharedPreferencesEncUtils;
+    private String masterKeyAlias;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ganti_password_fragment, container, false);
@@ -67,10 +70,15 @@ public class GantiPasswordFragment extends Fragment {
                                 //Pengecekan Status dari Response Body
                                 if (response.body().isBerhasil()){
                                     Toast.makeText(getContext(), "Berhasil Mengganti Password", Toast.LENGTH_SHORT).show();
-                                    editor.putBoolean("sudah_masuk", false);
-                                    editor.putString("id_pengguna", "");
-                                    editor.putString("email_pengguna", "");
-                                    editor.apply();
+                                    try {
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).edit().putBoolean("sudah_masuk", false).apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).edit().putString("id_pengguna", "").apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).edit().putString("email_pengguna", "").apply();
+                                    } catch (GeneralSecurityException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     getActivity().finish();
                                     Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);
                                     startActivity(pindahkehalamanmasuk);
@@ -102,16 +110,28 @@ public class GantiPasswordFragment extends Fragment {
 
     //Inisialisasi Komponen View
     private void initView(View view){
-        preference = PreferenceManager.getDefaultSharedPreferences(getContext());
-        editor = preference.edit();
+        sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         dataService = (DataService) ServiceGenerator.createBaseService(getContext(), DataService.class);
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_ganti_password);
         passwordLama = (EditText) view.findViewById(R.id.etpasswordlamaGantipassword);
         passwordBaru1 = (EditText) view.findViewById(R.id.etpasswordbaru1Gantipassword);
         passwordBaru2 = (EditText) view.findViewById(R.id.etpasswordbaru2Gantipassword);
         btnSimpan = (Button) view.findViewById(R.id.btnsimpanpasswordGantipassword);
-        id_pengguna = preference.getString("id_pengguna", null);
-        token_pengguna = preference.getString("token_pengguna", null);
+        try {
+            id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("id_pengguna", "");
+            token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("token_pengguna", "");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Method Untuk Mengosongkan Field Inputan

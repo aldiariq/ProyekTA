@@ -2,10 +2,8 @@ package com.aldiariq.projektakripto;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.security.crypto.MasterKeys;
 
 import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.model.Pengguna;
@@ -20,18 +19,17 @@ import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
 import com.aldiariq.projektakripto.response.ResponseGenerateKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseMasuk;
+import com.aldiariq.projektakripto.utils.SharedPreferencesEncUtils;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class MainActivity extends AppCompatActivity {
-
-    private SharedPreferences preference;
-    private SharedPreferences.Editor editor;
 
     public DataService dataService;
 
@@ -42,21 +40,34 @@ public class MainActivity extends AppCompatActivity {
 
     private RSA rsa;
 
+    private SharedPreferencesEncUtils sharedPreferencesEncUtils;
+    private String masterKeyAlias;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //Memanggil Method Inisialisasi Komponen View
-        initView();
+        try {
+            initView();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
 
         //Mengecek Apakah Pengguna Sudah Pernah Masuk
-        if (preference.getBoolean("sudah_masuk", false)){
-            //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
-            finish();
-            Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
-            Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
-            startActivity(pindahkedashboard);
+        try {
+            if (sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).getBoolean("sudah_masuk", false)){
+                //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
+                finish();
+                Toast.makeText(MainActivity.this, "Berhasil Masuk", Toast.LENGTH_SHORT).show();
+                Intent pindahkedashboard = new Intent(MainActivity.this, DashboardActivity.class);
+                startActivity(pindahkedashboard);
+            }
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         //Listener btnMasuk
@@ -85,18 +96,29 @@ public class MainActivity extends AppCompatActivity {
                                 if (response.body().isBerhasil()){
                                     //Menampung Data Pengguna di Shared Preferences
                                     List<Pengguna> pengguna = (List<Pengguna>) response.body().getPengguna();
-                                    editor.putBoolean("sudah_masuk", true);
-                                    editor.putString("token_pengguna", response.body().getToken());
-                                    editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
-                                    editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
-                                    editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());
+                                    try {
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putBoolean("sudah_masuk", true).apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putString("token_pengguna", response.body().getToken()).apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putString("id_pengguna", pengguna.get(0).getId_pengguna()).apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putString("email_pengguna", pengguna.get(0).getEmail_pengguna()).apply();
+                                        sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putString("nama_pengguna", pengguna.get(0).getNama_pengguna()).apply();
+                                    } catch (GeneralSecurityException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
 
                                     Call<ResponseGenerateKunciRSA> callGeneratekuncirsa = dataService.apiGeneratekuncirsa(response.body().getToken(), pengguna.get(0).getId_pengguna(), rsa.getPublicKey(), rsa.getModulus());
                                     callGeneratekuncirsa.enqueue(new Callback<ResponseGenerateKunciRSA>() {
                                         @Override
                                         public void onResponse(Call<ResponseGenerateKunciRSA> call, Response<ResponseGenerateKunciRSA> response) {
-                                            editor.putString("kunci_private", rsa.getPrivatekey());
-                                            editor.apply();
+                                            try {
+                                                sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, MainActivity.this).edit().putString("kunci_private", rsa.getPrivatekey()).apply();
+                                            } catch (GeneralSecurityException e) {
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -152,9 +174,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Inisialisasi Komponen View & Data Service
-    private void initView(){
-        preference = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = preference.edit();
+    private void initView() throws GeneralSecurityException {
+        sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
         txtEmail = (EditText) findViewById(R.id.inputemailMasuk);
         txtPassword = (EditText) findViewById(R.id.inputpasswordMasuk);

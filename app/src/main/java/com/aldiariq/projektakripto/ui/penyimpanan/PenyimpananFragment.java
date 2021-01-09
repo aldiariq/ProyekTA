@@ -9,12 +9,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +31,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.security.crypto.MasterKeys;
 
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.adapter.FilePenggunaAdapter;
@@ -53,10 +52,13 @@ import com.aldiariq.projektakripto.response.ResponseUploadFile;
 import com.aldiariq.projektakripto.utils.FileUtils;
 import com.aldiariq.projektakripto.utils.OnDeleteClickListener;
 import com.aldiariq.projektakripto.utils.OnDownloadClickListener;
+import com.aldiariq.projektakripto.utils.SharedPreferencesEncUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,12 +76,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private TextView tvnamahalaman;
     private DataService dataService;
     private FilePenggunaAdapter filePenggunaAdapter;
-    private SharedPreferences preference;
     private RecyclerView rvFile;
-
-    public static PenyimpananFragment newInstance() {
-        return new PenyimpananFragment();
-    }
 
     private ImageView imgpilihfileformupload;
     private TextView txtlokasifileformupload;
@@ -106,6 +103,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private RSA rsa;
     private AvalancheEffect avalancheEffect;
 
+    private SharedPreferencesEncUtils sharedPreferencesEncUtils;
+    private String masterKeyAlias;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -182,7 +181,14 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Menampung Kunci RSA Pengguna di Dalam List
                                     List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
                                     //Menampung Nilai Kunci RSA
-                                    String kunciprivate = preference.getString("kunci_private", "");
+                                    String kunciprivate = "";
+                                    try {
+                                        kunciprivate = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("kunci_private", "");
+                                    } catch (GeneralSecurityException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     String kuncipublic = kunciRSA.get(0).getKunci_public();
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 
@@ -192,7 +198,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Inisialisasi File Hasil Enkripsi
                                     File filehasilenkripsi = new File(lokasifileoutput);
                                     //Inisialisasi Request Body untuk Dikirimkan ke API
-                                    RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), preference.getString("id_pengguna", null));
+                                    //Menampung Nilai Kunci RSA
+                                    RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), id_pengguna);
                                     RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), rsa.encrypt(passwordblowfish));
                                     RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
                                     MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
@@ -254,25 +261,36 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_penyimpanan);
         filePenggunaAdapter = new FilePenggunaAdapter(getContext());
         dataService = (DataService) ServiceGenerator.createBaseService(getContext(), DataService.class);
-        preference = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         rvFile = (RecyclerView) view.findViewById(R.id.rv_file_penyimpanan);
         filePenggunaAdapter.setOnDownloadClickListener(this);
         filePenggunaAdapter.setOnDeleteClickListener(this);
         downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
-        token_pengguna = preference.getString("token_pengguna", "");
-        id_pengguna = preference.getString("id_pengguna", "");
+        try {
+            id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("id_pengguna", "");
+            token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("token_pengguna", "");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Method Untuk Memuat Data Pengguna
     private void loadData(){
         //Menampung idPengguna yang ada dalam Shared Preference
-        String tokenPengguna = preference.getString("token_pengguna", null);
-        String idPengguna = preference.getString("id_pengguna", null);
         filePenggunas.clear();
         filePenggunaAdapter.clear();
 
         //Proses Pengambilan File Pengguna dari API
-        Call<ResponseGetFile<List<FilePengguna>>> loadDatapengguna = dataService.apiGetfile(tokenPengguna, idPengguna);
+        Call<ResponseGetFile<List<FilePengguna>>> loadDatapengguna = dataService.apiGetfile(token_pengguna, id_pengguna);
         loadDatapengguna.enqueue(new Callback<ResponseGetFile<List<FilePengguna>>>() {
             @Override
             public void onResponse(Call<ResponseGetFile<List<FilePengguna>>> call, Response<ResponseGetFile<List<FilePengguna>>> response) {
@@ -369,7 +387,14 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Menampung Kunci RSA Pengguna di Dalam List
                                     List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
                                     //Menampung Nilai Kunci RSA
-                                    String kunciprivate = preference.getString("kunci_private", "");
+                                    String kunciprivate = "";
+                                    try {
+                                        kunciprivate = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("kunci_private", "");
+                                    } catch (GeneralSecurityException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     String kuncipublic = kunciRSA.get(0).getKunci_public();
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 

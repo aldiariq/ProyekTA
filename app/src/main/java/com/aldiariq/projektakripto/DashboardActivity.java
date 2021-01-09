@@ -1,10 +1,7 @@
 package com.aldiariq.projektakripto;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +15,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.security.crypto.MasterKeys;
 
 import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
 import com.aldiariq.projektakripto.response.ResponseKeluar;
+import com.aldiariq.projektakripto.utils.SharedPreferencesEncUtils;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,10 +34,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private SharedPreferences preference;
-    private SharedPreferences.Editor editor;
-
     private DataService dataService;
+
+    private SharedPreferencesEncUtils sharedPreferencesEncUtils;
+    private String masterKeyAlias;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,12 @@ public class DashboardActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Inisialisasi Komponen Halaman Upload File
-        preference = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = preference.edit();
+        sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (IOException | GeneralSecurityException e) {
+            e.printStackTrace();
+        }
 
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
 
@@ -65,7 +71,13 @@ public class DashboardActivity extends AppCompatActivity {
         //Setting Email Pengguna di Navigation Drawer
         View headerView = navigationView.getHeaderView(0);
         TextView txtusernamenavigation = (TextView) headerView.findViewById(R.id.txtusernamenavigation);
-        txtusernamenavigation.setText("Username : " + preference.getString("email_pengguna", null));
+        try {
+            txtusernamenavigation.setText("Username : " + sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("nama_pengguna", ""));
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Setting Warna Icon Navigasi Menjadi Null
         navigationView.setItemIconTintList(null);
@@ -75,8 +87,20 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
+                String token_pengguna = "";
+                String id_pengguna = "";
+
+                try {
+                    token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("token_pengguna", "");
+                    id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("id_pengguna", "");
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 //Menjalankan Endpoint Keluar Pengguna
-                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(preference.getString("token_pengguna", ""), preference.getString("id_pengguna", ""));
+                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
                 callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
                     @Override
                     public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
@@ -84,13 +108,18 @@ public class DashboardActivity extends AppCompatActivity {
                         if (response.code() == 200){
                             if (response.body().isBerhasil()){
                                 //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                                editor.putString("email_pengguna", "");
-                                editor.putString("token_pengguna", "");
-                                editor.putBoolean("sudah_masuk", false);
-                                editor.putString("nama_pengguna", "");
-                                editor.putString("kunci_private", "");
-                                editor.putString("id_pengguna", "");
-                                editor.apply();
+                                try {
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("email_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("token_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putBoolean("sudah_masuk", false).apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("nama_pengguna", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("kunci_private", "").apply();
+                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("id_pengguna", "").apply();
+                                } catch (GeneralSecurityException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
                                 finish();
                                 Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
