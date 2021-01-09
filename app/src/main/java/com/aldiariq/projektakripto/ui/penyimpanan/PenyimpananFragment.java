@@ -182,7 +182,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Menampung Kunci RSA Pengguna di Dalam List
                                     List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
                                     //Menampung Nilai Kunci RSA
-                                    String kunciprivate = kunciRSA.get(0).getKunci_private();
+                                    String kunciprivate = preference.getString("kunci_private", "");
                                     String kuncipublic = kunciRSA.get(0).getKunci_public();
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 
@@ -369,7 +369,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Menampung Kunci RSA Pengguna di Dalam List
                                     List<KunciRSA> kunciRSA = (List<KunciRSA>) response.body().getKunci_rsa();
                                     //Menampung Nilai Kunci RSA
-                                    String kunciprivate = kunciRSA.get(0).getKunci_private();
+                                    String kunciprivate = preference.getString("kunci_private", "");
                                     String kuncipublic = kunciRSA.get(0).getKunci_public();
                                     String kuncimodulus = kunciRSA.get(0).getKunci_modulus();
 

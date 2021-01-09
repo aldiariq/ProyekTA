@@ -55,23 +55,26 @@ public class AvalancheEffect {
         double tingkatAvalanche = 0;
         byte[] bytefileInput = this.ambilBytefile(new File(this.getFileinput()));
         byte[] bytefileOutput = this.ambilBytefile(new File(this.getFileoutput()));
+        int penghitung = 0;
         int pembeda = 0;
 
         for (int i = 0;i < bytefileInput.length; i++){
             String bilsatu = Integer.toBinaryString(bytefileInput[i] & 255 | 256);
             String bildua = Integer.toBinaryString(bytefileOutput[i] & 255 | 256);
 
-            for (int j = 0; j < 8; j++){
+            for (int j = 0; j < bilsatu.length(); j++){
                 String charsatu = bilsatu.substring(j, (j+1));
                 String chardua = bildua.substring(j, (j+1));
 
                 if (!charsatu.equals(chardua)){
                     pembeda++;
                 }
+
+                penghitung++;
             }
         }
 
-        tingkatAvalanche = ((pembeda * 100) / (bytefileInput.length * 8));
+        tingkatAvalanche = ((pembeda * 100) / penghitung);
 
         return tingkatAvalanche;
     }

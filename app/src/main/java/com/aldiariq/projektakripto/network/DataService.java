@@ -40,7 +40,6 @@ public interface DataService {
             @Field("email") String email,
             @Field("nama") String nama,
             @Field("password") String password,
-            @Field("kunciprivate") String kunciprivate,
             @Field("kuncipublic") String kuncipublic,
             @Field("kuncimodulus") String kuncimodulus
     );
