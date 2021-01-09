@@ -73,7 +73,7 @@ public class DaftarActivity extends AppCompatActivity {
                                 }else {
                                     //Memanggil Method Reset Inputan & Menampilkan Dialog
                                     progressDialog.dismiss();
-                                    Toast.makeText(DaftarActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DaftarActivity.this, "Gagal Mendaftarkan Akun, Pastikan Email Belum Terdaftar", Toast.LENGTH_SHORT).show();
                                 }
                             }
 

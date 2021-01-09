@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,16 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.aldiariq.projektakripto.DashboardActivity;
 import com.aldiariq.projektakripto.MainActivity;
 import com.aldiariq.projektakripto.R;
+import com.aldiariq.projektakripto.network.DataService;
+import com.aldiariq.projektakripto.network.ServiceGenerator;
+import com.aldiariq.projektakripto.response.ResponseKeluar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
@@ -25,6 +34,8 @@ public class HomeFragment extends Fragment {
 
     private TextView tvnamahalaman;
     private CardView cvpenyimpanan, cvtentangaplikasi, cvgantipassword, cvkeluar;
+
+    private DataService dataService;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.home_fragment, container, false);
@@ -65,13 +76,40 @@ public class HomeFragment extends Fragment {
         cvkeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editor.putBoolean("sudah_masuk", false);
-                editor.putString("id_pengguna", "");
-                editor.putString("email_pengguna", "");
-                editor.apply();
-                getActivity().finish();
-                Intent pindahkehalamanmasuk = new Intent(getContext(), MainActivity.class);
-                startActivity(pindahkehalamanmasuk);
+                //Menjalankan Endpoint Keluar Pengguna
+                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(preference.getString("token_pengguna", ""), preference.getString("id_pengguna", ""));
+                callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                    @Override
+                    public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
+                        //Pengecekan Response Code
+                        if (response.code() == 200){
+                            if (response.body().isBerhasil()){
+                                //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                                editor.putString("email_pengguna", "");
+                                editor.putString("token_pengguna", "");
+                                editor.putBoolean("sudah_masuk", false);
+                                editor.putString("nama_pengguna", "");
+                                editor.putString("kunci_private", "");
+                                editor.putString("id_pengguna", "");
+                                editor.apply();
+                                Toast.makeText(getActivity(), "Berhasil Keluar", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                                Intent pindahkehalamanmasuk = new Intent(getActivity(), MainActivity.class);
+                                startActivity(pindahkehalamanmasuk);
+                            }else {
+                                Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseKeluar> call, Throwable t) {
+                        Toast.makeText(getActivity(), "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                        Log.i("RESPONKELUAR", "GAGAL");
+                    }
+                });
             }
         });
 
@@ -81,6 +119,7 @@ public class HomeFragment extends Fragment {
     //Inisialisasi Komponen View
     private void initView(View view){
         preference = PreferenceManager.getDefaultSharedPreferences(getContext());
+        dataService = (DataService) ServiceGenerator.createBaseService(getActivity(), DataService.class);
         editor = preference.edit();
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_home);
         cvpenyimpanan = (CardView) view.findViewById(R.id.cvpenyimpanan_halaman_utama);

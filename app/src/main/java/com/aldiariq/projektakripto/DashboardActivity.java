@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,18 +80,27 @@ public class DashboardActivity extends AppCompatActivity {
                 callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
                     @Override
                     public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
-                        //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                        editor.putString("email_pengguna", "");
-                        editor.putString("token_pengguna", "");
-                        editor.putBoolean("sudah_masuk", false);
-                        editor.putString("nama_pengguna", "");
-                        editor.putString("kunci_private", "");
-                        editor.putString("id_pengguna", "");
-                        editor.apply();
-                        Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
-                        finish();
-                        Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
-                        startActivity(pindahkehalamanmasuk);
+                        //Pengecekan Response Code
+                        if (response.code() == 200){
+                            if (response.body().isBerhasil()){
+                                //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                                editor.putString("email_pengguna", "");
+                                editor.putString("token_pengguna", "");
+                                editor.putBoolean("sudah_masuk", false);
+                                editor.putString("nama_pengguna", "");
+                                editor.putString("kunci_private", "");
+                                editor.putString("id_pengguna", "");
+                                editor.apply();
+                                Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
+                                finish();
+                                Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
+                                startActivity(pindahkehalamanmasuk);
+                            }else {
+                                Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -98,7 +108,6 @@ public class DashboardActivity extends AppCompatActivity {
                         Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 return true;
             }
         });

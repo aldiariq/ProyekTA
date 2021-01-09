@@ -3,7 +3,7 @@ package com.aldiariq.projektakripto.response;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseKeluar<T> {
-    @SerializedName("berhasik")
+    @SerializedName("berhasil")
     private boolean berhasil;
 
     @SerializedName("pesan")
