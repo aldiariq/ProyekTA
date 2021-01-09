@@ -63,10 +63,12 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                editor.putBoolean("sudah_masuk", false);
-                editor.putString("token_pengguna", "");
-                editor.putString("id_pengguna", "");
                 editor.putString("email_pengguna", "");
+                editor.putString("token_pengguna", "");
+                editor.putBoolean("sudah_masuk", false);
+                editor.putString("nama_pengguna", "");
+                editor.putString("kunci_private", "");
+                editor.putString("id_pengguna", "");
                 editor.apply();
                 Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
                 finish();

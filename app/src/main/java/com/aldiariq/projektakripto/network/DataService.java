@@ -5,6 +5,7 @@ import com.aldiariq.projektakripto.response.ResponseDaftar;
 import com.aldiariq.projektakripto.response.ResponseDeleteFile;
 import com.aldiariq.projektakripto.response.ResponseDownloadFile;
 import com.aldiariq.projektakripto.response.ResponseGantiPasswordPengguna;
+import com.aldiariq.projektakripto.response.ResponseGenerateKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseGetFile;
 import com.aldiariq.projektakripto.response.ResponseGetKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseKeluar;
@@ -20,6 +21,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -39,9 +41,7 @@ public interface DataService {
     Call<ResponseDaftar> apiDaftar(
             @Field("email") String email,
             @Field("nama") String nama,
-            @Field("password") String password,
-            @Field("kuncipublic") String kuncipublic,
-            @Field("kuncimodulus") String kuncimodulus
+            @Field("password") String password
     );
 
     @FormUrlEncoded
@@ -60,6 +60,14 @@ public interface DataService {
     );
 
     //Implementasi Endpoint Algoritma RSA
+    @FormUrlEncoded
+    @POST(Server.API_GENERATEKUNCIRSA)
+    Call<ResponseGenerateKunciRSA> apiGeneratekuncirsa(
+            @Header("Authorization") String Token,
+            @Field("id_pengguna") String id_pengguna,
+            @Field("kunci_public") String kunci_public,
+            @Field("kunci_modulus") String kunci_modulus
+    );
     @GET(Server.API_GETKUNCIRSA + "{id_pengguna}")
     Call<ResponseGetKunciRSA> apiGetkuncirsa(
             @Header("Authorization") String Token,

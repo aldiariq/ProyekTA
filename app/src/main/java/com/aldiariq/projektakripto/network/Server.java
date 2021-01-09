@@ -12,6 +12,7 @@ public class Server {
     public static final String API_GANTIPASSWORD = "api/gantipasswordpengguna";
     public static final String API_KELUAR = "api/keluarpengguna";
 
+    public static final String API_GENERATEKUNCIRSA = "api/operasikunci/generatekuncirsa/";
     public static final String API_GETKUNCIRSA = "api/operasikunci/getkuncirsa/";
 
     public static final String API_UPLOADFILE = "api/operasifile/uploadfile";

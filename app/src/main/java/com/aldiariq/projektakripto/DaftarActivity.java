@@ -2,9 +2,7 @@ package com.aldiariq.projektakripto;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
 import com.aldiariq.projektakripto.response.ResponseDaftar;
@@ -24,9 +21,6 @@ import retrofit2.Response;
 public class DaftarActivity extends AppCompatActivity {
 
     public DataService dataService;
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
 
     private EditText txtEmail, txtNama, txtPassword1, txtPassword2;
     private Button btnDaftar, btnMasuk;
@@ -57,12 +51,8 @@ public class DaftarActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     Toast.makeText(DaftarActivity.this, "Pastikan Semua Inputan Terisi", Toast.LENGTH_SHORT).show();
                 }else {
-                    RSA daftarRSA = new RSA(512);
-
                     if (password1.equals(password2)){
-                        editor.putString("kunci_private", daftarRSA.getPrivatekey());
-                        editor.apply();
-                        Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, password1, daftarRSA.getPublicKey(), daftarRSA.getModulus());
+                        Call<ResponseDaftar> callDaftar = dataService.apiDaftar(email, nama, password1);
                         callDaftar.enqueue(new Callback<ResponseDaftar>() {
                             @Override
                             public void onResponse(Call<ResponseDaftar> call, Response<ResponseDaftar> response) {
@@ -116,8 +106,6 @@ public class DaftarActivity extends AppCompatActivity {
     //Inisialisasi Komponen View
     private void initView(){
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = sharedPreferences.edit();
         txtEmail = (EditText) findViewById(R.id.inputemailDaftar);
         txtNama = (EditText) findViewById(R.id.inputnamaDaftar);
         txtPassword1 = (EditText) findViewById(R.id.inputpasswordDaftar);

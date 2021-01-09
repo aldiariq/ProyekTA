@@ -14,9 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.model.Pengguna;
 import com.aldiariq.projektakripto.network.DataService;
 import com.aldiariq.projektakripto.network.ServiceGenerator;
+import com.aldiariq.projektakripto.response.ResponseGenerateKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseMasuk;
 
 import java.util.List;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnMasuk, btnDaftar;
 
     private ProgressDialog progressDialog;
+
+    private RSA rsa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,23 @@ public class MainActivity extends AppCompatActivity {
                                     editor.putString("id_pengguna", pengguna.get(0).getId_pengguna());
                                     editor.putString("email_pengguna", pengguna.get(0).getEmail_pengguna());
                                     editor.putString("nama_pengguna", pengguna.get(0).getNama_pengguna());
-                                    editor.apply();
+
+                                    Call<ResponseGenerateKunciRSA> callGeneratekuncirsa = dataService.apiGeneratekuncirsa(response.body().getToken(), pengguna.get(0).getId_pengguna(), rsa.getPublicKey(), rsa.getModulus());
+                                    callGeneratekuncirsa.enqueue(new Callback<ResponseGenerateKunciRSA>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseGenerateKunciRSA> call, Response<ResponseGenerateKunciRSA> response) {
+                                            editor.putString("kunci_private", rsa.getPrivatekey());
+                                            editor.apply();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseGenerateKunciRSA> call, Throwable t) {
+                                            //Memanggil Method Reset Inputan & Menampilkan Dialog
+                                            resetInputan();
+                                            progressDialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "Gagal Menyimpan Kunci RSA", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
                                     //Destroy Activity, Menampilkan Dialog & Menjalankan DashboardActivity
                                     finish();
@@ -140,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
         txtPassword = (EditText) findViewById(R.id.inputpasswordMasuk);
         btnMasuk = (Button) findViewById(R.id.btnmasukMasuk);
         btnDaftar = (Button) findViewById(R.id.btndaftarMasuk);
+        rsa = new RSA(512);
     }
 
     //Method Untuk Mengosongkan Field Inputan
