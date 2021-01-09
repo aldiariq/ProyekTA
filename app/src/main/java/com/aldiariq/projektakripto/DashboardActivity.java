@@ -18,7 +18,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.aldiariq.projektakripto.network.DataService;
+import com.aldiariq.projektakripto.network.ServiceGenerator;
+import com.aldiariq.projektakripto.response.ResponseKeluar;
 import com.google.android.material.navigation.NavigationView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -26,6 +33,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     private SharedPreferences preference;
     private SharedPreferences.Editor editor;
+
+    private DataService dataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,8 @@ public class DashboardActivity extends AppCompatActivity {
         //Inisialisasi Komponen Halaman Upload File
         preference = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preference.edit();
+
+        dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -62,18 +73,32 @@ public class DashboardActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_keluar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                editor.putString("email_pengguna", "");
-                editor.putString("token_pengguna", "");
-                editor.putBoolean("sudah_masuk", false);
-                editor.putString("nama_pengguna", "");
-                editor.putString("kunci_private", "");
-                editor.putString("id_pengguna", "");
-                editor.apply();
-                Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
-                finish();
-                Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
-                startActivity(pindahkehalamanmasuk);
+
+                //Menjalankan Endpoint Keluar Pengguna
+                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(preference.getString("token_pengguna", ""), preference.getString("id_pengguna", ""));
+                callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                    @Override
+                    public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
+                        //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                        editor.putString("email_pengguna", "");
+                        editor.putString("token_pengguna", "");
+                        editor.putBoolean("sudah_masuk", false);
+                        editor.putString("nama_pengguna", "");
+                        editor.putString("kunci_private", "");
+                        editor.putString("id_pengguna", "");
+                        editor.apply();
+                        Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
+                        finish();
+                        Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
+                        startActivity(pindahkehalamanmasuk);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseKeluar> call, Throwable t) {
+                        Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 return true;
             }
         });

@@ -21,7 +21,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -53,7 +52,7 @@ public interface DataService {
             @Field("password_baru") String passwordbaru
     );
 
-    @GET(Server.API_KELUAR + "{id_pengguna")
+    @GET(Server.API_KELUAR + "{id_pengguna}")
     Call<ResponseKeluar> apiKeluar(
             @Header("Authorization") String Token,
             @Path("id_pengguna") String id_pengguna
