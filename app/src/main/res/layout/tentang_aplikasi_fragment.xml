@@ -34,19 +34,7 @@
         </ImageView>
 
         <TextView
-            android:id="@+id/tv_pembimbing_1_tentangaplikasi"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
-
-        <TextView
-            android:id="@+id/tv_pembimbing_2_tentangaplikasi"
+            android:id="@+id/tv_pembimbing_tentangaplikasi"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

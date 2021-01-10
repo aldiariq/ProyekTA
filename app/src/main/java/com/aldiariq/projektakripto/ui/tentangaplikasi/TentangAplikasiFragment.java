@@ -20,8 +20,7 @@ public class TentangAplikasiFragment extends Fragment {
     }
 
     private TextView tvtentangAplikasi;
-    private TextView tvpembimbing1Aplikasi;
-    private TextView tvpembimbing2Aplikasi;
+    private TextView tvpembimbingAplikasi;
     private TextView tvmahasiswaAplikasi;
     private TextView tvintroAplikasi;
 
@@ -38,8 +37,7 @@ public class TentangAplikasiFragment extends Fragment {
 
         //Menampilkan Variabel ke Fragment Tentang Aplikasi
         tvtentangAplikasi.setText(getResources().getString(R.string.nama_aplikasi));
-        tvpembimbing1Aplikasi.setText("Pembimbing 1 : " + getResources().getString(R.string.nama_pembimbing_1));
-        tvpembimbing2Aplikasi.setText("Pembimbing 2 : " + getResources().getString(R.string.nama_pembimbing_2));
+        tvpembimbingAplikasi.setText("Pembimbing : " + getResources().getString(R.string.nama_pembimbing_1));
         tvmahasiswaAplikasi.setText("Mahasiswa : " + getResources().getString(R.string.nama_mahasiswa));
         tvintroAplikasi.setText(getResources().getString(R.string.intro_aplikasi));
 
@@ -51,8 +49,7 @@ public class TentangAplikasiFragment extends Fragment {
     //Inisialisasi Komponen View
     private void initView(View view){
         tvtentangAplikasi = view.findViewById(R.id.tv_tentang_tentangaplikasi);
-        tvpembimbing1Aplikasi = view.findViewById(R.id.tv_pembimbing_1_tentangaplikasi);
-        tvpembimbing2Aplikasi = view.findViewById(R.id.tv_pembimbing_2_tentangaplikasi);
+        tvpembimbingAplikasi = view.findViewById(R.id.tv_pembimbing_tentangaplikasi);
         tvmahasiswaAplikasi = view.findViewById(R.id.tv_mahasiswa_tentangaplikasi);
         tvintroAplikasi = view.findViewById(R.id.tv_intro_tentangaplikasi);
     }
