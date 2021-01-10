@@ -1,5 +1,7 @@
 package com.aldiariq.projektakripto.algoritma.avalancheeffect;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -52,7 +54,7 @@ public class AvalancheEffect {
     }
 
     public double hitungAvalanche(){
-        double tingkatAvalanche = 0;
+        double tingkatAvalanche;
         byte[] bytefileInput = this.ambilBytefile(new File(this.getFileinput()));
         byte[] bytefileOutput = this.ambilBytefile(new File(this.getFileoutput()));
         int penghitung = 0;

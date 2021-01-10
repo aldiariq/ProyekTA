@@ -166,13 +166,25 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                         }else {
                             //Inisialisasi Class Blowfish
                             blowfish = new Blowfish(passwordblowfish);
+
                             waktuMulai = System.currentTimeMillis();
+
                             //Pemanggilan Method Enkripsi Blowfish
                             blowfish.encrypt(lokasifileinput, lokasifileoutput);
+
                             waktuSelesai = System.currentTimeMillis();
+
                             //Penghitung Access Time
                             accessTime = new AccessTime(waktuMulai, waktuSelesai);
                             Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
+
+                            //Pemanggilan Method Avalanche Effect
+                            AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileinput, lokasifileoutput);
+                            Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
+
+                            //Proses Penghapusan File
+                            blowfish.hapusFile(lokasifileinput);
+
                             //Proses Pengambilan Kunci RSA Pengguna dari API
                             Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(token_pengguna, id_pengguna);
                             getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
@@ -561,6 +573,5 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 }

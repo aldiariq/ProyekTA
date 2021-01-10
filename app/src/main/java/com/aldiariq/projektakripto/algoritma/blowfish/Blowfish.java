@@ -1,6 +1,7 @@
 package com.aldiariq.projektakripto.algoritma.blowfish;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
 
@@ -93,11 +94,6 @@ public class Blowfish {
         } catch (IOException ex) {
             System.out.println(ex);
         }
-
-        //Pemanggilan Method Avalanche Effect
-        AvalancheEffect avalancheEffect = new AvalancheEffect(srcPath, destPath);
-        Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
-        rawFile.delete();
     }
 
     /**
@@ -143,5 +139,10 @@ public class Blowfish {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+    }
+
+    public void hapusFile(String srcPath){
+        File fileAsli = new File(srcPath);
+        fileAsli.delete();
     }
 }
