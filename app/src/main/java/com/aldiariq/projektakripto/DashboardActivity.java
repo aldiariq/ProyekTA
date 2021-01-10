@@ -1,13 +1,16 @@
 package com.aldiariq.projektakripto;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -86,57 +89,77 @@ public class DashboardActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_keluar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_keluar, null);
+                dialog.setView(dialogView);
+                dialog.setCancelable(true);
 
-                String token_pengguna = "";
-                String id_pengguna = "";
-
-                try {
-                    token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("token_pengguna", "");
-                    id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("id_pengguna", "");
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                //Menjalankan Endpoint Keluar Pengguna
-                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
-                callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                dialog.setPositiveButton("Keluar", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
-                        //Pengecekan Response Code
-                        if (response.code() == 200){
-                            if (response.body().isBerhasil()){
-                                //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                                try {
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("email_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("token_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putBoolean("sudah_masuk", false).apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("nama_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("kunci_private", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("id_pengguna", "").apply();
-                                } catch (GeneralSecurityException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                    public void onClick(DialogInterface dialog, int which) {
+                        String token_pengguna = "";
+                        String id_pengguna = "";
+
+                        try {
+                            token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("token_pengguna", "");
+                            id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).getString("id_pengguna", "");
+                        } catch (GeneralSecurityException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        //Menjalankan Endpoint Keluar Pengguna
+                        Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
+                        callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                            @Override
+                            public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
+                                //Pengecekan Response Code
+                                if (response.code() == 200){
+                                    if (response.body().isBerhasil()){
+                                        //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                                        try {
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("email_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("token_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putBoolean("sudah_masuk", false).apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("nama_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("kunci_private", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, DashboardActivity.this).edit().putString("id_pengguna", "").apply();
+                                        } catch (GeneralSecurityException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                        Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
+                                        startActivity(pindahkehalamanmasuk);
+                                    }else {
+                                        Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
                                 }
-                                Toast.makeText(DashboardActivity.this, "Berhasil Keluar", Toast.LENGTH_SHORT).show();
-                                finish();
-                                Intent pindahkehalamanmasuk = new Intent(DashboardActivity.this, MainActivity.class);
-                                startActivity(pindahkehalamanmasuk);
-                            }else {
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseKeluar> call, Throwable t) {
                                 Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
                             }
-                        }else {
-                            Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseKeluar> call, Throwable t) {
-                        Toast.makeText(DashboardActivity.this, "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
+
+                dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
                 return true;
             }
         });

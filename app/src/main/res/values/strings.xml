@@ -19,6 +19,8 @@
     <string name="nama_mahasiswa">M. Aldi Ariqi</string>
     <string name="intro_aplikasi">Aplikasi ini merupakan aplikasi penyimpanan file dokumen online terenkripsi yang dibuat untuk penyusunan tugas akhir di Jurusan Teknik Informatika dengan Topik Kriptografi Menggunakan Metode Hybrid Cryptosystem Blowfish dan RSA(Rivest Shamir Adleman)</string>
 
+    <string name="dialog_keluar">Sebelum Melakukan Log Out Pastikan File yang Disimpan Sudah di Unduh Semua</string>
+
     <string name="nav_header_username">Username : </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

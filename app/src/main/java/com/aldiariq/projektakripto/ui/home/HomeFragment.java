@@ -1,5 +1,8 @@
 package com.aldiariq.projektakripto.ui.home;
 
+import android.app.Dialog;
+import android.app.Notification;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -89,57 +93,77 @@ public class HomeFragment extends Fragment {
         cvkeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Menjalankan Endpoint Keluar Pengguna
-                String token_pengguna = "";
-                String id_pengguna = "";
-
-                try {
-                    token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("token_pengguna", "");
-                    id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("id_pengguna", "");
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
-                callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_keluar, null);
+                dialog.setView(dialogView);
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("Keluar", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
-                        //Pengecekan Response Code
-                        if (response.code() == 200){
-                            if (response.body().isBerhasil()){
-                                //Destroy Activity & Menjalankan Activity MainActivity(Login)
-                                try {
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("email_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("token_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putBoolean("sudah_masuk", false).apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("nama_pengguna", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("kunci_private", "").apply();
-                                    sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("id_pengguna", "").apply();
-                                } catch (GeneralSecurityException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                Toast.makeText(getActivity(), "Berhasil Keluar", Toast.LENGTH_SHORT).show();
-                                getActivity().finish();
-                                Intent pindahkehalamanmasuk = new Intent(getActivity(), MainActivity.class);
-                                startActivity(pindahkehalamanmasuk);
-                            }else {
-                                Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
-                            }
-                        }else {
-                            Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Menjalankan Endpoint Keluar Pengguna
+                        String token_pengguna = "";
+                        String id_pengguna = "";
+
+                        try {
+                            token_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("token_pengguna", "");
+                            id_pengguna = sharedPreferencesEncUtils.getEncryptedSharedPreferences(masterKeyAlias, getContext()).getString("id_pengguna", "");
+                        } catch (GeneralSecurityException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseKeluar> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Gagal Keluar", Toast.LENGTH_SHORT).show();
-                        Log.i("RESPONKELUAR", "GAGAL");
+                        Call<ResponseKeluar> callKeluarpengguna = dataService.apiKeluar(token_pengguna, id_pengguna);
+                        callKeluarpengguna.enqueue(new Callback<ResponseKeluar>() {
+                            @Override
+                            public void onResponse(Call<ResponseKeluar> call, Response<ResponseKeluar> response) {
+                                //Pengecekan Response Code
+                                if (response.code() == 200){
+                                    if (response.body().isBerhasil()){
+                                        //Destroy Activity & Menjalankan Activity MainActivity(Login)
+                                        try {
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("email_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("token_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putBoolean("sudah_masuk", false).apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("nama_pengguna", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("kunci_private", "").apply();
+                                            sharedPreferencesEncUtils.getEncryptedSharedPreferences(finalMasterKeyAlias, getContext()).edit().putString("id_pengguna", "").apply();
+                                        } catch (GeneralSecurityException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Toast.makeText(getActivity(), "Berhasil Keluar", Toast.LENGTH_SHORT).show();
+                                        getActivity().finish();
+                                        Intent pindahkehalamanmasuk = new Intent(getActivity(), MainActivity.class);
+                                        startActivity(pindahkehalamanmasuk);
+                                    }else {
+                                        Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(getActivity(), response.body().getPesan(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseKeluar> call, Throwable t) {
+                                Toast.makeText(getActivity(), "Gagal Keluar", Toast.LENGTH_SHORT).show();
+                                Log.i("RESPONKELUAR", "GAGAL");
+                            }
+                        });
                     }
                 });
+
+                dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
 
