@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:scrollbars="vertical"
     android:background="#ffffff"
@@ -49,73 +50,92 @@
                 android:textSize="24sp"
                 android:text="Halaman Daftar"></TextView>
 
+            <ImageView
+                android:layout_marginTop="20dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/logologinregis">
+            </ImageView>
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColorHint="@android:color/black"
-                android:paddingBottom="10dp">
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                app:startIconDrawable="@drawable/ic_baseline_email_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputemailDaftar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:textColor="@android:color/black"
                     android:textSize="18dp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColorHint="@android:color/black"
-                android:paddingBottom="10dp">
+                android:layout_height="wrap_content"
+                android:hint="Nama Lengkap"
+                app:startIconDrawable="@drawable/ic_baseline_emoji_people_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputnamaDaftar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nama Lengkap"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:textColor="@android:color/black"
                     android:textSize="18dp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField3"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColorHint="@android:color/black"
-                android:paddingBottom="10dp">
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/ic_baseline_vpn_key_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputpasswordDaftar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
                     android:inputType="textPassword"
                     android:textColor="@android:color/black"
                     android:textSize="18dp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField4"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColorHint="@android:color/black"
-                android:paddingBottom="10dp">
+                android:layout_height="wrap_content"
+                android:hint="Ulangi Password"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/ic_baseline_vpn_key_24"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputpassword2Daftar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ulangi Password"
                     android:inputType="textPassword"
                     android:textColor="@android:color/black"
                     android:textSize="18dp" />
+
             </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/btndaftarDaftar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/shapebtndaftar"
                 android:text="Daftar"
                 android:textColor="@android:color/white"

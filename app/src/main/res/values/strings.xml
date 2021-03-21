@@ -14,11 +14,12 @@
     <string name="menu_tentangaplikasi">Tentang Aplikasi</string>
     <string name="menu_keluar">Keluar</string>
     <string name="nama_aplikasi">Aplikasi Penyimpanan Dokumen Online Terenkripsi</string>
-    <string name="nama_pembimbing_1">Drs. Megah Mulya, M.T.</string>
-    <string name="nama_pembimbing_2"></string>
+    <string name="nama_pembimbing_1">Julian Supardi, M.T.</string>
+    <string name="nama_pembimbing_2">Osvari Arsalan, S.Kom., M.T</string>
     <string name="nama_mahasiswa">M. Aldi Ariqi</string>
     <string name="intro_aplikasi">Aplikasi ini merupakan aplikasi penyimpanan file dokumen online terenkripsi yang dibuat untuk penyusunan tugas akhir di Jurusan Teknik Informatika dengan Topik Kriptografi Menggunakan Metode Hybrid Cryptosystem Blowfish dan RSA(Rivest Shamir Adleman)</string>
 
+    <string name="dialog_hapus_file">File yang Sudah Dihapus Tidak Bisa Dikembalikan</string>
     <string name="dialog_keluar">Sebelum Melakukan Log Out Pastikan File yang Disimpan Sudah di Unduh Semua</string>
 
     <string name="nav_header_username">Username : </string>

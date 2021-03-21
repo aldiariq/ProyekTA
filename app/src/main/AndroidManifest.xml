@@ -3,30 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aldiariq.projektakripto">
 
-    <uses-permission android:name="android.permission.INTERNET" tools:remove="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:remove="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion"/>
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:remove="android:maxSdkVersion" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/gambarsplashscreen"
         android:label="@string/nama_aplikasi"
+        android:networkSecurityConfig="@xml/network_config_file"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/gambarsplashscreen"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
-        android:networkSecurityConfig="@xml/network_config_file">
+        android:usesCleartextTraffic="true">
+        <activity android:name=".LupapasswordActivity"></activity>
         <activity
             android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DaftarActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

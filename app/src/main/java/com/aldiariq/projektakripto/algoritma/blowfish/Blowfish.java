@@ -1,10 +1,5 @@
 package com.aldiariq.projektakripto.algoritma.blowfish;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

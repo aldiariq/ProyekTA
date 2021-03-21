@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/colorPrimaryDark"
+    android:background="@drawable/bgutama"
     tools:context=".SplashScreenActivity">
 
     <TextView
@@ -15,7 +15,7 @@
         android:textSize="24sp"
         android:elevation="20dp"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:fontFamily="sans-serif-black"
         android:layout_marginBottom="100dp"
         android:layout_marginLeft="10dp"
@@ -29,16 +29,30 @@
         android:src="@drawable/gambarsplashscreen">
     </ImageView>
 
+    <TextView
+        android:text="Mengamankan File Dokumen Anda"
+        android:textAlignment="center"
+        android:textStyle="italic|bold"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:fontFamily="cursive"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TextView>
+
     <ProgressBar
         android:id="@+id/pbloadingHalamansplashscreen"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="20dp"
         android:max="100"
         android:progress="0"
-        android:progressTint="@color/cardview_light_background" />
+        android:progressTint="@color/cardview_dark_background" />
 
 </LinearLayout>

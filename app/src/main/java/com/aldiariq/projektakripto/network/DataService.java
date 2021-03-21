@@ -9,6 +9,7 @@ import com.aldiariq.projektakripto.response.ResponseGenerateKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseGetFile;
 import com.aldiariq.projektakripto.response.ResponseGetKunciRSA;
 import com.aldiariq.projektakripto.response.ResponseKeluar;
+import com.aldiariq.projektakripto.response.ResponseLupaPassword;
 import com.aldiariq.projektakripto.response.ResponseMasuk;
 import com.aldiariq.projektakripto.response.ResponseUploadFile;
 
@@ -41,6 +42,12 @@ public interface DataService {
             @Field("email") String email,
             @Field("nama") String nama,
             @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST(Server.API_LUPAPASSWORD)
+    Call<ResponseLupaPassword> apiLupapassword(
+            @Field("email") String email
     );
 
     @FormUrlEncoded

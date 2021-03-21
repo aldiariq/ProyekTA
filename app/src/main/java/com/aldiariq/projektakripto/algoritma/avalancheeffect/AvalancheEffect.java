@@ -1,7 +1,5 @@
 package com.aldiariq.projektakripto.algoritma.avalancheeffect;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileInputStream;
 

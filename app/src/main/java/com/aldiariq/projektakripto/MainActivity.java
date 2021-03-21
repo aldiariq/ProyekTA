@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText txtEmail, txtPassword;
     private Button btnMasuk, btnDaftar;
+    private TextView txtLupapassword;
 
     private ProgressDialog progressDialog;
 
@@ -171,6 +173,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(daftar);
             }
         });
+
+        //Listener txtLupapass
+        txtLupapassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent lupapassword = new Intent(MainActivity.this, LupapasswordActivity.class);
+                startActivity(lupapassword);
+            }
+        });
     }
 
     //Inisialisasi Komponen View & Data Service
@@ -181,11 +193,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
         dataService = (DataService) ServiceGenerator.createBaseService(this, DataService.class);
         txtEmail = (EditText) findViewById(R.id.inputemailMasuk);
         txtPassword = (EditText) findViewById(R.id.inputpasswordMasuk);
         btnMasuk = (Button) findViewById(R.id.btnmasukMasuk);
         btnDaftar = (Button) findViewById(R.id.btndaftarMasuk);
+        txtLupapassword = (TextView) findViewById(R.id.txtlupapasswordMasuk);
         rsa = new RSA(512);
     }
 

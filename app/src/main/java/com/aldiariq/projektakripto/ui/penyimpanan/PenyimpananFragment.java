@@ -13,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,14 +31,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.security.crypto.MasterKeys;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.adapter.FilePenggunaAdapter;
 import com.aldiariq.projektakripto.algoritma.accesstime.AccessTime;
-import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
 import com.aldiariq.projektakripto.algoritma.blowfish.Blowfish;
 import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.model.FilePengguna;
@@ -71,9 +74,12 @@ import retrofit2.Response;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
-public class PenyimpananFragment extends Fragment implements OnDownloadClickListener, OnDeleteClickListener {
+public class PenyimpananFragment extends Fragment implements OnDownloadClickListener, OnDeleteClickListener, SwipeRefreshLayout.OnRefreshListener {
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private TextView tvnamahalaman;
+    private EditText etcari;
     private DataService dataService;
     private FilePenggunaAdapter filePenggunaAdapter;
     private RecyclerView rvFile;
@@ -87,7 +93,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private static final int MY_RESULT_CODE_FILECHOOSER = 2000;
 
 
-    private ArrayList<FilePengguna> filePenggunas = new ArrayList<>();
+    public static ArrayList<FilePengguna> filePenggunas = new ArrayList<>();
     private DownloadManager downloadManager;
     private DownloadManager.Request downloadManagerrequest;
 
@@ -101,7 +107,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private long waktuMulai;
     private long waktuSelesai;
     private RSA rsa;
-    private AvalancheEffect avalancheEffect;
 
     private SharedPreferencesEncUtils sharedPreferencesEncUtils;
     private String masterKeyAlias;
@@ -112,11 +117,32 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
         //Memanggil Method Inisialisasi Komponen View
         initView(root);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.penyimpanan_refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         rvFile.setAdapter(filePenggunaAdapter);
         rvFile.setLayoutManager(new LinearLayoutManager(getContext()));
 
         //Memanggil Method Load Data Pengguna
         loadData();
+
+        etcari.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String pencarian = etcari.getText().toString();
+                filePenggunaAdapter.getFilter().filter(pencarian);
+            }
+        });
 
         final FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -175,12 +201,12 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                             waktuSelesai = System.currentTimeMillis();
 
                             //Penghitung Access Time
-                            accessTime = new AccessTime(waktuMulai, waktuSelesai);
-                            Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
+//                            accessTime = new AccessTime(waktuMulai, waktuSelesai);
+//                            Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
 
                             //Pemanggilan Method Avalanche Effect
-                            AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileinput, lokasifileoutput);
-                            Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
+//                            AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileinput, lokasifileoutput);
+//                            Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
 
                             //Proses Penghapusan File
                             blowfish.hapusFile(lokasifileinput);
@@ -268,9 +294,18 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
         return root;
     }
 
+    @Override
+    public void onRefresh() {
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            loadData();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
     //Inisialisasi Komponen View
     private void initView(View view){
         tvnamahalaman = (TextView) view.findViewById(R.id.tv_penyimpanan);
+        etcari = (EditText) view.findViewById(R.id.et_cari_penyimpanan);
         filePenggunaAdapter = new FilePenggunaAdapter(getContext());
         dataService = (DataService) ServiceGenerator.createBaseService(getContext(), DataService.class);
         sharedPreferencesEncUtils = new SharedPreferencesEncUtils();
@@ -297,10 +332,6 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     //Method Untuk Memuat Data Pengguna
     private void loadData(){
-        //Menampung idPengguna yang ada dalam Shared Preference
-        filePenggunas.clear();
-        filePenggunaAdapter.clear();
-
         //Proses Pengambilan File Pengguna dari API
         Call<ResponseGetFile<List<FilePengguna>>> loadDatapengguna = dataService.apiGetfile(token_pengguna, id_pengguna);
         loadDatapengguna.enqueue(new Callback<ResponseGetFile<List<FilePengguna>>>() {
@@ -308,6 +339,8 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
             public void onResponse(Call<ResponseGetFile<List<FilePengguna>>> call, Response<ResponseGetFile<List<FilePengguna>>> response) {
                 //Pengecekan Response Code
                 if (response.code() == 200){
+                    filePenggunas.clear();
+                    filePenggunaAdapter.clear();
                     filePenggunas.addAll(response.body().getFile_pengguna());
                     filePenggunaAdapter.addAll(filePenggunas);
                     filePenggunaAdapter.notifyDataSetChanged();
@@ -325,35 +358,67 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     @Override
     public void onDeleteClick(int position) {
-        progressDialog = ProgressDialog.show(getContext(), "Proses Hapus File", "Silahkan Menunggu..");
-        //Menampung id_file yang ada dalam Shared Preference
-        String id_file = filePenggunas.get(position).getId_file();
-        String nama_file = filePenggunas.get(position).getNama_file();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_hapus_file, null);
+        dialog.setView(dialogView);
+        dialog.setCancelable(true);
 
-        //Proses Penghapusan File Pengguna dari API
-        Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(token_pengguna, id_file, nama_file, id_pengguna);
-        deleteFile.enqueue(new Callback<ResponseDeleteFile>() {
+        dialog.setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
             @Override
-            public void onResponse(Call<ResponseDeleteFile> call, Response<ResponseDeleteFile> response) {
-                //Pengecekan Response Code
-                if (response.code() == 200){
-                    if (response.body().isBerhasil()){
-                        Toast.makeText(getContext(), "Berhasil Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
-                        loadData();
-                    }else {
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog = ProgressDialog.show(getContext(), "Proses Hapus File", "Silahkan Menunggu..");
+                //Menampung id_file yang ada dalam Shared Preference
+                String id_file = filePenggunas.get(position).getId_file();
+                String nama_file = filePenggunas.get(position).getNama_file();
+
+                //Proses Penghapusan File Pengguna dari API
+                Call<ResponseDeleteFile> deleteFile = dataService.apiDeletefile(token_pengguna, id_file, nama_file, id_pengguna);
+                deleteFile.enqueue(new Callback<ResponseDeleteFile>() {
+                    @Override
+                    public void onResponse(Call<ResponseDeleteFile> call, Response<ResponseDeleteFile> response) {
+                        //Pengecekan Response Code
+                        if (response.code() == 200){
+                            if (response.body().isBerhasil()){
+                                Toast.makeText(getContext(), "Berhasil Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
+
+                                rvFile.setAdapter(filePenggunaAdapter);
+                                rvFile.setLayoutManager(new LinearLayoutManager(getContext()));
+                                loadData();
+//                                filePenggunaAdapter.clear();
+//                                filePenggunaAdapter.removeFilepengguna(position);
+//                                rvFile.swapAdapter(filePenggunaAdapter,false);
+//                                rvFile.setLayoutManager(new LinearLayoutManager(getContext()));
+//                                filePenggunaAdapter.notifyDataSetChanged();
+//                                etcari.getText().clear();
+
+//                                filePenggunas.remove(position);
+
+                            }else {
+                                Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseDeleteFile> call, Throwable t) {
                         Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                    Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseDeleteFile> call, Throwable t) {
-                Toast.makeText(getContext(), "Gagal Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
+                });
+                progressDialog.dismiss();
             }
         });
-        progressDialog.dismiss();
+
+        dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -439,10 +504,10 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                                 public void onReceive(Context ctxt, Intent intent) {
                                                     blowfish = new Blowfish(passwordblowfish);
                                                     blowfish.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
-                                                    Toast.makeText(getContext(), "Proses Unduh File Selesai", Toast.LENGTH_SHORT).show();
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                                            Toast.makeText(getContext(), "Proses Unduh File Selesai", Toast.LENGTH_SHORT).show();
                                         }else {
                                             Toast.makeText(getContext(), "Pastikan Password Benar", Toast.LENGTH_SHORT).show();
                                         }

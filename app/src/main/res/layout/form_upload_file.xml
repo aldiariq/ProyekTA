@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:layout_gravity="center"
@@ -39,15 +39,24 @@
         android:layout_height="wrap_content">
     </TextView>
 
-    <EditText
-        android:id="@+id/etpasswordblowfishformupload"
-        android:hint="Password Blowfish"
-        android:inputType="numberPassword"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextField2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </EditText>
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/ic_baseline_vpn_key_24"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etpasswordblowfishformupload"
+            android:inputType="numberPassword"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
