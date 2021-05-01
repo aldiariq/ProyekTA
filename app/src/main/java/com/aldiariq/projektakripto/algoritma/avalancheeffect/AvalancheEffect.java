@@ -5,20 +5,20 @@ import java.io.FileInputStream;
 
 public class AvalancheEffect {
 
-    private String fileinput;
-    private String fileoutput;
+    private String filesatu;
+    private String filedua;
 
-    public AvalancheEffect(String fileinput, String fileoutput){
-        this.fileinput = fileinput;
-        this.fileoutput = fileoutput;
+    public AvalancheEffect(String filesatu, String filedua){
+        this.filesatu = filesatu;
+        this.filedua = filedua;
     }
 
-    public String getFileinput() {
-        return fileinput;
+    public String getFilesatu() {
+        return filesatu;
     }
 
-    public String getFileoutput() {
-        return fileoutput;
+    public String getFiledua() {
+        return filedua;
     }
 
     private byte[] ambilBytefile (File file)
@@ -53,14 +53,14 @@ public class AvalancheEffect {
 
     public double hitungAvalanche(){
         double tingkatAvalanche;
-        byte[] bytefileInput = this.ambilBytefile(new File(this.getFileinput()));
-        byte[] bytefileOutput = this.ambilBytefile(new File(this.getFileoutput()));
+        byte[] bytefileSatu = this.ambilBytefile(new File(this.getFilesatu()));
+        byte[] bytefileDua = this.ambilBytefile(new File(this.getFiledua()));
         int penghitung = 0;
         int pembeda = 0;
 
-        for (int i = 0;i < bytefileInput.length; i++){
-            String bilsatu = Integer.toBinaryString(bytefileInput[i] & 255 | 256);
-            String bildua = Integer.toBinaryString(bytefileOutput[i] & 255 | 256);
+        for (int i = 0;i < bytefileSatu.length; i++){
+            String bilsatu = Integer.toBinaryString(bytefileSatu[i] & 255 | 256);
+            String bildua = Integer.toBinaryString(bytefileDua[i] & 255 | 256);
 
             for (int j = 0; j < bilsatu.length(); j++){
                 String charsatu = bilsatu.substring(j, (j+1));
