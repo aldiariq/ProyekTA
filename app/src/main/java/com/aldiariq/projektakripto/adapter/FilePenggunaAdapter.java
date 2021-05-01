@@ -54,17 +54,17 @@ public class FilePenggunaAdapter extends RecyclerView.Adapter<FilePenggunaAdapte
     }
 
     public void clear(){
-        for(int i = 0; i<listFilepengguna.size();i++) {
-            listFilepengguna.remove(i);
-        }
-
-        for(int i = 0; i<listFilepenggunatemp.size();i++) {
-            listFilepenggunatemp.remove(i);
-        }
-
+//        for(int i = 0; i<listFilepengguna.size();i++) {
+//            listFilepengguna.remove(i);
+//        }
 //
-//        listFilepengguna.clear();
-//        listFilepenggunatemp.clear();
+//        for(int i = 0; i<listFilepenggunatemp.size();i++) {
+//            listFilepenggunatemp.remove(i);
+//        }
+
+
+        listFilepengguna.clear();
+        listFilepenggunatemp.clear();
     }
 
     public void setOnDownloadClickListener(OnDownloadClickListener onDownloadClickListener){

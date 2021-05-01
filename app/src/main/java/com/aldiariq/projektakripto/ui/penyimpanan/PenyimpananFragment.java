@@ -40,6 +40,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.adapter.FilePenggunaAdapter;
 import com.aldiariq.projektakripto.algoritma.accesstime.AccessTime;
+import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
 import com.aldiariq.projektakripto.algoritma.blowfish.Blowfish;
 import com.aldiariq.projektakripto.algoritma.rsa.RSA;
 import com.aldiariq.projektakripto.model.FilePengguna;
@@ -64,6 +65,7 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -102,7 +104,10 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
     private ProgressDialog progressDialog;
 
-    private Blowfish blowfish;
+    private Blowfish blowfishsatu;
+    private Blowfish blowfishdua;
+    private Blowfish blowfishdekripsi;
+    private Random random;
     private AccessTime accessTime;
     private long waktuMulai;
     private long waktuSelesai;
@@ -182,35 +187,16 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                         progressDialog = ProgressDialog.show(getContext(), "Proses Upload File", "Silahkan Menunggu..");
                         //Inisialisasi Variabel Untuk Upload File
                         String lokasifileinput = txtlokasifileformupload.getText().toString();
-                        String lokasifileoutput = txtlokasifileformupload.getText().toString() + ".enc";
+                        String lokasifileoutputsatu = txtlokasifileformupload.getText().toString() + ".enc";
+                        //Inisialisasi Variabel File Untuk Pengetesan Avalache Effect
+                        String lokasifileoutputdua = txtlokasifileformupload.getText().toString() + ".enc.test";
                         String passwordblowfish = etpasswordblowfishformupload.getText().toString();
 
                         //Pengecekan Apakah Variabel Sudah Terisi Semua atau Belum
-                        if (lokasifileinput.isEmpty() || lokasifileoutput.isEmpty() || passwordblowfish.isEmpty()){
+                        if (lokasifileinput.isEmpty() || lokasifileoutputsatu.isEmpty() || lokasifileoutputdua.isEmpty() || passwordblowfish.isEmpty()){
                             progressDialog.dismiss();
                             Toast.makeText(getContext(), "Pastikan File Sudah Dipilih dan Password Sudah Diinputkan", Toast.LENGTH_SHORT).show();
                         }else {
-                            //Inisialisasi Class Blowfish
-                            blowfish = new Blowfish(passwordblowfish);
-
-                            waktuMulai = System.currentTimeMillis();
-
-                            //Pemanggilan Method Enkripsi Blowfish
-                            blowfish.encrypt(lokasifileinput, lokasifileoutput);
-
-                            waktuSelesai = System.currentTimeMillis();
-
-                            //Penghitung Access Time
-//                            accessTime = new AccessTime(waktuMulai, waktuSelesai);
-//                            Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
-
-                            //Pemanggilan Method Avalanche Effect
-//                            AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileinput, lokasifileoutput);
-//                            Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
-
-                            //Proses Penghapusan File
-                            blowfish.hapusFile(lokasifileinput);
-
                             //Proses Pengambilan Kunci RSA Pengguna dari API
                             Call<ResponseGetKunciRSA> getKunciRSACall = dataService.apiGetkuncirsa(token_pengguna, id_pengguna);
                             getKunciRSACall.enqueue(new Callback<ResponseGetKunciRSA>() {
@@ -233,12 +219,54 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     //Inisialisasi Class RSA
                                     rsa = new RSA(new BigInteger(kunciprivate), new BigInteger(kuncipublic), new BigInteger(kuncimodulus));
 
+                                    //Proses Enkripsi File
+                                    random = new Random();
+
+                                    String passwordfilesatu = rsa.encrypt(passwordblowfish);
+                                    String passwordfiledua;
+
+                                    String karakteracak = "";
+
+                                    do {
+                                        karakteracak = String.valueOf((random.nextInt(9 - 0) + 0));
+                                        passwordfiledua = karakteracak + passwordfilesatu.substring(1, passwordfilesatu.length());
+                                    }while(karakteracak.equals(String.valueOf(passwordfilesatu.charAt(0))));
+
+                                    //Log Info Enkripsi
+                                    Log.i("Pass Blowfish File 1", passwordfilesatu);
+                                    Log.i("Pass Blowfish File 2", passwordfiledua);
+
+                                    //Inisialisasi Class Blowfish
+                                    blowfishsatu = new Blowfish(passwordfilesatu);
+                                    blowfishdua = new Blowfish(passwordfiledua);
+
+                                    //waktuMulai = System.currentTimeMillis();
+
+                                    //Pemanggilan Method Enkripsi Blowfish
+                                    blowfishsatu.encrypt(lokasifileinput, lokasifileoutputsatu);
+                                    blowfishdua.encrypt(lokasifileinput, lokasifileoutputdua);
+
+                                    //waktuSelesai = System.currentTimeMillis();
+
+                                    //Penghitung Access Time
+                                    //accessTime = new AccessTime(waktuMulai, waktuSelesai);
+                                    //Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
+
+                                    //Pemanggilan Method Avalanche Effect
+                                    AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileoutputsatu, lokasifileoutputdua);
+                                    Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
+                                    Toast.makeText(getContext(), "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%", Toast.LENGTH_LONG).show();
+
+                                    //Proses Penghapusan File
+                                    blowfishsatu.hapusFile(lokasifileinput);
+                                    blowfishdua.hapusFile(lokasifileoutputdua);
+
                                     //Inisialisasi File Hasil Enkripsi
-                                    File filehasilenkripsi = new File(lokasifileoutput);
+                                    File filehasilenkripsi = new File(lokasifileoutputsatu);
                                     //Inisialisasi Request Body untuk Dikirimkan ke API
                                     //Menampung Nilai Kunci RSA
                                     RequestBody idPengguna = RequestBody.create(MediaType.parse("text/plain"), id_pengguna);
-                                    RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), rsa.encrypt(passwordblowfish));
+                                    RequestBody kunciFile = RequestBody.create(MediaType.parse("text/plain"), passwordfilesatu);
                                     RequestBody requestBodyfile = RequestBody.create(MediaType.parse("/"), filehasilenkripsi);
                                     MultipartBody.Part fileEnkripsi = MultipartBody.Part.createFormData("file_enkripsi", filehasilenkripsi.getName(), requestBodyfile);
 
@@ -263,6 +291,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                         @Override
                                         public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
                                             progressDialog.dismiss();
+                                            Log.i("errorupload", t.getMessage());
                                             Toast.makeText(getContext(), "Gagal Mengupload File, Pastikan Terkoneksi Internet 3", Toast.LENGTH_LONG).show();
                                         }
                                     });
@@ -340,9 +369,9 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                 //Pengecekan Response Code
                 if (response.code() == 200){
                     filePenggunas.clear();
-                    filePenggunaAdapter.clear();
+//                    filePenggunaAdapter.clear();
                     filePenggunas.addAll(response.body().getFile_pengguna());
-                    filePenggunaAdapter.addAll(filePenggunas);
+                    filePenggunaAdapter.addAll((ArrayList<FilePengguna>) filePenggunas.clone());
                     filePenggunaAdapter.notifyDataSetChanged();
                 }else {
                     Toast.makeText(getContext(), "Gagal Mengambil File Pengguna", Toast.LENGTH_SHORT).show();
@@ -380,10 +409,12 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                         //Pengecekan Response Code
                         if (response.code() == 200){
                             if (response.body().isBerhasil()){
+                                etcari.setText("");
                                 Toast.makeText(getContext(), "Berhasil Menghapus File Pengguna", Toast.LENGTH_SHORT).show();
-
-                                rvFile.setAdapter(filePenggunaAdapter);
-                                rvFile.setLayoutManager(new LinearLayoutManager(getContext()));
+//                                filePenggunas.clear();
+//                                filePenggunaAdapter.clear();
+//                                rvFile.setAdapter(filePenggunaAdapter);
+//                                rvFile.setLayoutManager(new LinearLayoutManager(getContext()));
                                 loadData();
 //                                filePenggunaAdapter.clear();
 //                                filePenggunaAdapter.removeFilepengguna(position);
@@ -502,8 +533,9 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                             //Listener Ketika File yang Terenkripsi Sudah Selesai di Download
                                             BroadcastReceiver selesaiDownload = new BroadcastReceiver() {
                                                 public void onReceive(Context ctxt, Intent intent) {
-                                                    blowfish = new Blowfish(passwordblowfish);
-                                                    blowfish.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
+
+                                                    blowfishdekripsi = new Blowfish(downloadfilePenggunas.get(0).getKunci_file());
+                                                    blowfishdekripsi.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);
                                                 }
                                             };
                                             getActivity().registerReceiver(selesaiDownload, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));

@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         btnMasuk = (Button) findViewById(R.id.btnmasukMasuk);
         btnDaftar = (Button) findViewById(R.id.btndaftarMasuk);
         txtLupapassword = (TextView) findViewById(R.id.txtlupapasswordMasuk);
-        rsa = new RSA(512);
+        rsa = new RSA(128);
     }
 
     //Method Untuk Mengosongkan Field Inputan
