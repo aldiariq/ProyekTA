@@ -1,4 +1,4 @@
-package com.aldiariq.projektakripto;
+ package com.aldiariq.projektakripto;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

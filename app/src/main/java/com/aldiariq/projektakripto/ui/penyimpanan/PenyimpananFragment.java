@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.security.crypto.MasterKeys;
@@ -39,7 +38,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.aldiariq.projektakripto.R;
 import com.aldiariq.projektakripto.adapter.FilePenggunaAdapter;
-import com.aldiariq.projektakripto.algoritma.accesstime.AccessTime;
+//import com.aldiariq.projektakripto.algoritma.accesstime.AccessTime;
 import com.aldiariq.projektakripto.algoritma.avalancheeffect.AvalancheEffect;
 import com.aldiariq.projektakripto.algoritma.blowfish.Blowfish;
 import com.aldiariq.projektakripto.algoritma.rsa.RSA;
@@ -107,8 +106,9 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
     private Blowfish blowfishsatu;
     private Blowfish blowfishdua;
     private Blowfish blowfishdekripsi;
+    private AvalancheEffect avalancheEffect;
     private Random random;
-    private AccessTime accessTime;
+//    private AccessTime accessTime;
     private long waktuMulai;
     private long waktuSelesai;
     private RSA rsa;
@@ -240,20 +240,18 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
                                     blowfishsatu = new Blowfish(passwordfilesatu);
                                     blowfishdua = new Blowfish(passwordfiledua);
 
-                                    //waktuMulai = System.currentTimeMillis();
-
-                                    //Pemanggilan Method Enkripsi Blowfish
+                                    //Pemanggilan Method Enkripsi Blowfish dan Pengukuran Access Time
+                                    waktuMulai = System.currentTimeMillis();
                                     blowfishsatu.encrypt(lokasifileinput, lokasifileoutputsatu);
+                                    waktuSelesai = System.currentTimeMillis();
                                     blowfishdua.encrypt(lokasifileinput, lokasifileoutputdua);
 
-                                    //waktuSelesai = System.currentTimeMillis();
-
                                     //Penghitung Access Time
-                                    //accessTime = new AccessTime(waktuMulai, waktuSelesai);
-                                    //Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
+//                                    accessTime = new AccessTime(waktuMulai, waktuSelesai);
+//                                    Log.i("ACCESSTIME", "Access Time : " + accessTime.hitungAccesstime() + "ms");
 
                                     //Pemanggilan Method Avalanche Effect
-                                    AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileoutputsatu, lokasifileoutputdua);
+                                    avalancheEffect = new AvalancheEffect(lokasifileoutputsatu, lokasifileoutputdua);
                                     Log.i("TINGKATAVALANCHE", "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%");
                                     Toast.makeText(getContext(), "Tingkat Avalanche Effect : " + avalancheEffect.hitungAvalanche() + "%", Toast.LENGTH_LONG).show();
 
@@ -532,7 +530,7 @@ public class PenyimpananFragment extends Fragment implements OnDownloadClickList
 
                                             //Listener Ketika File yang Terenkripsi Sudah Selesai di Download
                                             BroadcastReceiver selesaiDownload = new BroadcastReceiver() {
-                                                public void onReceive(Context ctxt, Intent intent) {
+                                                public void onReceive(Context ctx, Intent intent) {
 
                                                     blowfishdekripsi = new Blowfish(downloadfilePenggunas.get(0).getKunci_file());
                                                     blowfishdekripsi.decrypt(namafilesebelumdidekripsi, namafilesetelahdidekripsi);

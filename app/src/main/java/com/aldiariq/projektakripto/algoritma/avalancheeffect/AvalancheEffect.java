@@ -74,7 +74,7 @@ public class AvalancheEffect {
             }
         }
 
-        tingkatAvalanche = ((pembeda * 100) / penghitung);
+        tingkatAvalanche = ((pembeda * 100.0) / penghitung);
 
         return tingkatAvalanche;
     }
